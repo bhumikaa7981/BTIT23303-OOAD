@@ -1,1 +1,1179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OOP but make it iconic 🧠✨</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg-deep:#FFF9FC;
+  --bg-card:#FFFFFF;
+  --bg-card2:#FFFFFF;
+  --pink:#F0338B;
+  --cyan:#0BB4C4;
+  --yellow:#F5A300;
+  --lime:#4CAF3D;
+  --violet:#8B5CF6;
+  --ink:#2A1B4D;
+  --dim:#6E6289;
+  --code-bg:#211642;
+  --code-text:#9AE86B;
+  --accent:#0BB4C4;
+}
+*{box-sizing:border-box;}
+html{font-size:18px;}
+html,body{margin:0;padding:0;height:100%;background:var(--bg-deep);overflow:hidden;}
+body{font-family:'Space Grotesk',sans-serif;color:var(--ink);}
+h1,h2,h3,h4{font-family:'Baloo 2',sans-serif;margin:0;}
+code, .mono{font-family:'JetBrains Mono',monospace;}
+::selection{background:var(--pink);color:#fff;}
+
+/* ---------- background ambience ---------- */
+.blob{position:fixed;border-radius:50%;filter:blur(100px);opacity:.4;z-index:0;pointer-events:none;}
+.blob1{width:520px;height:520px;background:var(--pink);top:-160px;left:-160px;animation:float1 14s ease-in-out infinite;}
+.blob2{width:460px;height:460px;background:var(--cyan);bottom:-140px;right:-120px;animation:float2 16s ease-in-out infinite;}
+.blob3{width:380px;height:380px;background:var(--violet);top:40%;left:60%;animation:float1 18s ease-in-out infinite reverse;}
+.blob4{width:340px;height:340px;background:var(--yellow);bottom:10%;left:8%;opacity:.3;animation:float2 20s ease-in-out infinite reverse;}
+@keyframes float1{0%,100%{transform:translate(0,0);}50%{transform:translate(60px,40px);}}
+@keyframes float2{0%,100%{transform:translate(0,0);}50%{transform:translate(-50px,-30px);}}
+
+/* ---------- top progress ---------- */
+#storybar{position:fixed;top:0;left:0;right:0;z-index:50;display:flex;gap:6px;padding:14px 16px 8px;}
+.seg{flex:1;height:7px;border-radius:7px;background:rgba(42,27,77,0.1);cursor:pointer;overflow:hidden;position:relative;}
+.seg .fill{position:absolute;left:0;top:0;bottom:0;width:0%;background:linear-gradient(90deg,var(--pink),var(--cyan));border-radius:7px;transition:width .35s ease;}
+.seg.done .fill{width:100%;}
+.seg.current .fill{width:100%;}
+
+#topbar{position:fixed;top:27px;left:0;right:0;z-index:49;display:flex;justify-content:space-between;align-items:center;padding:6px 20px;pointer-events:none;}
+#brand{font-family:'Baloo 2';font-weight:800;font-size:1.05rem;letter-spacing:.02em;color:var(--ink);opacity:.85;}
+#counter{font-family:'JetBrains Mono';font-size:.85rem;color:var(--dim);background:rgba(42,27,77,0.06);padding:5px 12px;border-radius:20px;pointer-events:auto;}
+
+/* ---------- side dot nav ---------- */
+#dotnav{position:fixed;right:20px;top:50%;transform:translateY(-50%);z-index:50;display:flex;flex-direction:column;gap:11px;}
+.dot{width:12px;height:12px;border-radius:50%;background:rgba(42,27,77,0.18);cursor:pointer;position:relative;transition:.25s;}
+.dot:hover{background:rgba(42,27,77,0.4);}
+.dot.active{background:var(--cyan);box-shadow:0 0 0 5px rgba(11,180,196,0.22);width:15px;height:15px;}
+.dot .tip{position:absolute;right:24px;top:50%;transform:translateY(-50%);white-space:nowrap;background:#fff;border:1px solid rgba(42,27,77,.12);box-shadow:0 6px 18px rgba(42,27,77,.15);color:var(--ink);padding:6px 12px;border-radius:8px;font-size:.8rem;opacity:0;pointer-events:none;transition:.2s;font-family:'Space Grotesk';}
+.dot:hover .tip{opacity:1;}
+
+/* ---------- arrows ---------- */
+.navbtn{position:fixed;top:50%;transform:translateY(-50%);z-index:50;width:56px;height:56px;border-radius:50%;border:2px solid rgba(42,27,77,.15);background:rgba(255,255,255,.75);backdrop-filter:blur(6px);color:var(--ink);font-size:1.6rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.2s;box-shadow:0 6px 18px rgba(42,27,77,.1);}
+.navbtn:hover{background:var(--pink);border-color:var(--pink);color:#fff;transform:translateY(-50%) scale(1.08);}
+.navbtn:disabled{opacity:0;pointer-events:none;}
+#prevBtn{left:16px;}
+#nextBtn{right:68px;}
+
+/* ---------- deck / slides ---------- */
+#deck{position:absolute;top:0;left:0;height:100%;display:flex;transition:transform .55s cubic-bezier(.65,0,.35,1);z-index:1;}
+.slide{width:100vw;height:100vh;flex:none;overflow-y:auto;overflow-x:hidden;padding:0;scrollbar-width:thin;scrollbar-color:var(--pink) transparent;}
+.slide::-webkit-scrollbar{width:9px;}
+.slide::-webkit-scrollbar-thumb{background:var(--pink);border-radius:9px;}
+.slide-inner{max-width:1360px;margin:0 auto;padding:112px 46px 100px;min-height:100%;}
+
+/* reveal animation */
+.reveal{opacity:0;transform:translateY(26px);transition:opacity .55s ease, transform .55s ease;}
+.slide.active .reveal{opacity:1;transform:translateY(0);}
+.slide.active .reveal:nth-child(1){transition-delay:.05s;}
+.slide.active .reveal:nth-child(2){transition-delay:.12s;}
+.slide.active .reveal:nth-child(3){transition-delay:.19s;}
+.slide.active .reveal:nth-child(4){transition-delay:.26s;}
+.example-card.reveal{transition-delay:calc(var(--i) * 70ms + 120ms) !important;}
+
+/* ---------- cover ---------- */
+.cover-slide .slide-inner{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding-top:60px;}
+.eyebrow-pill{display:inline-block;background:rgba(240,51,139,.1);border:1px solid rgba(240,51,139,.25);padding:11px 22px;border-radius:40px;font-size:.95rem;letter-spacing:.05em;margin-bottom:24px;font-family:'JetBrains Mono';color:#C21F72;font-weight:700;}
+.cover-title{font-size:clamp(2.9rem,7.4vw,5.6rem);line-height:1.05;font-weight:800;background:linear-gradient(100deg,var(--pink),var(--cyan) 45%,var(--yellow) 85%);-webkit-background-clip:text;background-clip:text;color:transparent;}
+.cover-sub{font-size:clamp(1.2rem,2.1vw,1.5rem);color:var(--dim);max-width:760px;margin:28px auto 8px;font-weight:500;line-height:1.55;}
+.pillrow{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-top:36px;max-width:900px;}
+.pill{background:var(--bg-card);border:2px solid rgba(42,27,77,.1);box-shadow:0 4px 14px rgba(42,27,77,.08);padding:11px 20px;border-radius:30px;font-size:.98rem;font-weight:700;color:var(--ink);}
+.startbtn{margin-top:46px;background:linear-gradient(100deg,var(--pink),var(--violet));border:none;color:white;font-family:'Baloo 2';font-weight:700;font-size:1.3rem;padding:19px 48px;border-radius:50px;cursor:pointer;box-shadow:0 10px 30px rgba(240,51,139,.35);transition:.2s;}
+.startbtn:hover{transform:translateY(-3px) scale(1.03);box-shadow:0 16px 40px rgba(240,51,139,.5);}
+.coverfoot{margin-top:58px;font-size:.92rem;color:var(--dim);opacity:.8;}
+
+/* ---------- generic slide chrome ---------- */
+.kicker{font-family:'JetBrains Mono';font-size:1rem;letter-spacing:.08em;color:var(--accent);text-transform:uppercase;font-weight:800;margin-bottom:12px;}
+.slide-title{font-size:clamp(2.4rem,4.6vw,3.8rem);font-weight:800;margin-bottom:16px;color:var(--ink);}
+.slide-tagline{font-size:1.35rem;line-height:1.55;color:var(--dim);max-width:900px;margin-bottom:26px;font-weight:500;}
+.definition-box{background:#fff;box-shadow:0 6px 20px rgba(42,27,77,.08);border-left:6px solid var(--accent);border-radius:12px;padding:20px 26px;margin-bottom:26px;font-size:1.15rem;line-height:1.55;color:var(--ink);max-width:960px;}
+.definition-box strong{color:var(--accent);}
+.syntax-block{background:var(--code-bg);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:20px 26px;margin-bottom:34px;max-width:980px;box-shadow:0 10px 26px rgba(42,27,77,.15);}
+.syntax-block-label{font-size:.9rem;color:#B9AEDC;margin-bottom:12px;font-family:'JetBrains Mono';}
+.syntax-block code{display:block;color:var(--code-text);font-size:1.08rem;padding:4px 0;}
+.remember-box{margin-top:40px;background:linear-gradient(100deg,rgba(240,51,139,.1),rgba(11,180,196,.1));border:1px solid rgba(42,27,77,.1);border-radius:16px;padding:22px 28px;font-size:1.15rem;line-height:1.55;max-width:980px;color:var(--ink);}
+
+/* ---------- quiz ---------- */
+.quiz-section{margin-top:50px;}
+.quiz-heading{font-size:1.6rem;color:var(--ink);margin-bottom:6px;}
+.quiz-subheading{font-size:1.02rem;color:var(--dim);margin-bottom:20px;}
+.quiz-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(360px,1fr));gap:22px;}
+.quiz-card{background:#fff;border:2.5px solid rgba(42,27,77,.1);border-radius:20px;padding:24px 26px 22px;box-shadow:0 8px 20px rgba(42,27,77,.07);transition:.25s;}
+.quiz-card.answered{border-color:var(--accent,rgba(42,27,77,.1));}
+.quiz-q{font-weight:700;font-size:1.12rem;color:var(--ink);margin-bottom:16px;line-height:1.5;}
+.quiz-options{display:flex;flex-direction:column;gap:10px;}
+.quiz-opt{text-align:left;padding:12px 16px;border-radius:12px;border:2px solid rgba(42,27,77,.15);background:#fff;font-family:'Space Grotesk',sans-serif;font-size:1rem;font-weight:600;color:var(--ink);cursor:pointer;transition:.18s;}
+.quiz-opt:hover{border-color:var(--accent);background:rgba(11,180,196,.07);transform:translateX(3px);}
+.quiz-card.answered .quiz-opt{cursor:default;pointer-events:none;}
+.quiz-card.answered .quiz-opt:hover{transform:none;}
+.quiz-opt.correct{background:#DFF6E3;border-color:#4CAF3D;color:#1F6B1A;}
+.quiz-opt.correct::after{content:'  ✅';}
+.quiz-opt.wrong{background:#FDE3ED;border-color:#F0338B;color:#A3175E;}
+.quiz-opt.wrong::after{content:'  ❌';}
+.quiz-explain{max-height:0;overflow:hidden;transition:max-height .5s cubic-bezier(.4,0,.2,1), opacity .4s ease;opacity:0;}
+.quiz-card.answered .quiz-explain{max-height:260px;opacity:1;}
+.quiz-explain-inner{margin-top:16px;padding:14px 18px;background:linear-gradient(100deg,rgba(240,51,139,.08),rgba(11,180,196,.08));border-radius:12px;font-size:.96rem;line-height:1.55;color:var(--ink);transform:translateY(-8px);transition:transform .45s cubic-bezier(.34,1.56,.64,1) .05s;}
+.quiz-card.answered .quiz-explain-inner{transform:translateY(0);}
+
+/* ---------- practice problems ---------- */
+.problem-grid{display:flex;flex-direction:column;gap:26px;margin-top:16px;}
+.problem-card{background:#fff;border:2.5px solid rgba(42,27,77,.1);border-radius:22px;padding:28px 30px 30px;box-shadow:0 8px 22px rgba(42,27,77,.07);transition:.25s;}
+.problem-card.revealed{border-color:var(--accent);}
+.problem-head{display:flex;align-items:center;gap:16px;margin-bottom:14px;}
+.problem-num{width:46px;height:46px;border-radius:50%;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-family:'Baloo 2';font-weight:800;font-size:1.25rem;flex:none;}
+.problem-title{font-size:1.35rem;font-weight:700;color:var(--ink);}
+.problem-desc{font-size:1.08rem;color:var(--dim);line-height:1.6;margin-bottom:20px;max-width:1000px;}
+.problem-reveal-btn{background:linear-gradient(100deg,var(--pink),var(--violet));color:#fff;border:none;padding:13px 28px;border-radius:30px;font-family:'Baloo 2';font-weight:700;font-size:1.02rem;cursor:pointer;transition:.2s;box-shadow:0 6px 18px rgba(139,92,246,.25);}
+.problem-reveal-btn:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(240,51,139,.35);}
+.problem-solution{max-height:0;overflow:hidden;transition:max-height .6s cubic-bezier(.4,0,.2,1), opacity .5s ease;opacity:0;}
+.problem-card.revealed .problem-solution{max-height:3000px;opacity:1;}
+.solution-diagrams{display:flex;flex-direction:column;gap:28px;padding-top:22px;margin-top:22px;border-top:2px dashed rgba(42,27,77,.15);}
+.solution-block-label{font-family:'JetBrains Mono';font-size:.88rem;color:var(--accent);font-weight:800;text-transform:uppercase;letter-spacing:.05em;margin-bottom:12px;}
+.solution-block .example-diagram{min-height:auto;padding:12px 0;}
+.section-tag{position:absolute;top:22px;right:34px;font-size:.8rem;color:var(--dim);font-family:'JetBrains Mono';opacity:.6;}
+
+/* ---------- examples grid ---------- */
+.examples-grid{display:grid;grid-template-columns:1fr;gap:30px;margin-top:10px;}
+.example-card{background:#fff;border:2px solid rgba(42,27,77,.08);border-radius:22px;padding:32px 34px 34px;transition:.25s;position:relative;overflow:hidden;box-shadow:0 8px 22px rgba(42,27,77,.06);}
+.example-card:hover{border-color:var(--accent);transform:translateY(-4px);box-shadow:0 16px 34px rgba(42,27,77,.16);}
+.example-head{display:flex;align-items:center;gap:14px;margin-bottom:16px;}
+.example-emoji{font-size:2.2rem;}
+.example-head h4{font-size:1.5rem;font-weight:700;color:var(--ink);}
+.example-diagram{display:flex;align-items:center;justify-content:center;min-height:230px;padding:24px 10px;overflow-x:auto;}
+.syntax-chip{background:var(--code-bg);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:12px 16px;margin:14px 0;overflow-x:auto;}
+.syntax-chip code{color:var(--code-text);font-size:1rem;white-space:nowrap;}
+.example-blurb{font-size:1.08rem;color:var(--dim);line-height:1.6;margin:0;}
+
+/* ---------- UML box ---------- */
+.uml-box{background:#fff;border:3px solid var(--box-accent,var(--accent));border-radius:14px;min-width:230px;max-width:300px;box-shadow:0 8px 20px rgba(42,27,77,.12);font-size:1rem;}
+.uml-box .uml-name{background:var(--box-accent,var(--accent));color:#fff;font-weight:800;text-align:center;padding:14px 18px;font-size:1.25rem;border-radius:11px 11px 0 0;font-family:'Baloo 2';}
+.uml-box.abstract .uml-name{font-style:italic;}
+.uml-box .uml-stereo{text-align:center;font-size:.85rem;letter-spacing:.05em;padding-top:9px;color:#B8790A;font-weight:700;font-family:'JetBrains Mono';}
+.uml-box .uml-section{padding:13px 18px;border-top:2px solid rgba(42,27,77,.1);color:var(--ink);min-height:20px;}
+.uml-box .uml-section div{padding:3px 0;font-family:'JetBrains Mono';font-size:.95rem;}
+.uml-box .dim{opacity:.4;}
+.uml-box.object-box .uml-name{text-decoration:underline;}
+
+/* ---------- relation diagram (horizontal — boxes side by side, label above the line) ---------- */
+.rel-diagram{display:flex;align-items:center;justify-content:center;flex-wrap:nowrap;gap:0;}
+.rel-end{flex:none;}
+.rel-end-group{display:flex;align-items:center;flex:none;}
+.rel-mid{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;min-width:170px;padding:0 18px;}
+.rel-mult-row{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:24px;}
+.rel-mult{font-weight:800;font-size:1rem;font-family:'JetBrains Mono';color:#B8790A;white-space:nowrap;}
+.rel-role-row{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:20px;margin-top:2px;}
+.rel-role{font-size:.9rem;font-style:italic;color:var(--dim);white-space:nowrap;}
+.rel-label{display:block;color:var(--ink);background:transparent;margin-bottom:8px;font-size:1.08rem;font-weight:800;white-space:nowrap;text-align:center;}
+.rel-line-row{display:flex;align-items:center;width:100%;}
+.rel-line{flex:1;height:4px;border-radius:2px;background:var(--box-accent,var(--accent));min-width:90px;}
+.rel-line.dashed{background:none;border-top:4px dashed var(--box-accent,var(--accent));height:0;}
+.diamond{width:22px;height:22px;transform:rotate(45deg);flex:none;border:4px solid var(--box-accent,var(--accent));}
+.diamond.hollow{background:#fff;}
+.diamond.filled{background:var(--box-accent,var(--accent));}
+.qualifier-box{border:2.5px solid var(--box-accent,var(--accent));border-left:none;background:#fff;padding:14px 14px;font-size:.85rem;font-family:'JetBrains Mono';font-weight:700;color:#B8790A;border-radius:0 8px 8px 0;text-align:center;align-self:stretch;display:flex;align-items:center;justify-content:center;white-space:nowrap;}
+
+/* ---------- inheritance diagram ---------- */
+.inherit-diagram{display:flex;flex-direction:column;align-items:center;padding:20px 0;}
+.tri-hollow{width:0;height:0;border-left:22px solid transparent;border-right:22px solid transparent;border-bottom:32px solid var(--box-accent,var(--accent));margin-top:2px;position:relative;}
+.tri-hollow::after{content:'';position:absolute;left:-15px;top:7px;width:0;height:0;border-left:15px solid transparent;border-right:15px solid transparent;border-bottom:22px solid #fff;}
+.vline{width:4px;height:30px;background:var(--box-accent,var(--accent));}
+.children-row{display:flex;gap:44px;position:relative;padding-top:30px;flex-wrap:wrap;justify-content:center;row-gap:30px;}
+.children-row::before{content:'';position:absolute;top:0;left:12%;right:12%;height:4px;background:var(--box-accent,var(--accent));}
+.child-branch{display:flex;flex-direction:column;align-items:center;}
+.stub{width:4px;height:30px;background:var(--box-accent,var(--accent));}
+
+/* ---------- association class ---------- */
+.assocclass-wrap{display:flex;flex-direction:column;align-items:center;}
+.dash-line{width:0;border-left:4px dashed var(--box-accent,var(--accent));height:32px;}
+
+/* ---------- self association ---------- */
+.self-assoc{display:flex;align-items:center;gap:8px;}
+.self-loop{margin-left:-4px;}
+.self-labels{display:flex;flex-direction:column;justify-content:space-between;height:150px;padding:14px 0 14px 8px;font-size:.92rem;color:var(--dim);font-style:italic;}
+.self-label-mid{color:#B8790A;font-style:normal;font-weight:700;font-family:'JetBrains Mono';font-size:.92rem;}
+
+/* ---------- legend / cheatsheet ---------- */
+.legend-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin:26px 0;}
+.legend-item{background:#fff;border:1px solid rgba(42,27,77,.1);box-shadow:0 6px 16px rgba(42,27,77,.06);border-radius:14px;padding:16px 18px;}
+.legend-sym{font-family:'JetBrains Mono';font-weight:800;color:var(--accent);font-size:1.1rem;}
+.legend-txt{font-size:.95rem;color:var(--dim);margin-top:6px;}
+
+/* ---------- cheatsheet slide ---------- */
+.cheat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px;margin-top:12px;}
+.cheat-card{background:#fff;border:2px solid rgba(42,27,77,.08);box-shadow:0 6px 16px rgba(42,27,77,.06);border-radius:18px;padding:22px 24px;}
+.cheat-card .csym{font-size:2rem;margin-bottom:8px;}
+.cheat-card h5{font-family:'Baloo 2';font-size:1.2rem;margin-bottom:7px;color:var(--ink);}
+.cheat-card p{font-size:.95rem;color:var(--dim);margin:0;line-height:1.5;}
+
+/* ---------- story / pillar flip cards ---------- */
+.pillar-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px;margin-top:22px;}
+.flipcard{background:#fff;border:2px solid rgba(42,27,77,.1);box-shadow:0 6px 18px rgba(42,27,77,.07);border-radius:20px;padding:26px;cursor:pointer;transition:.25s;position:relative;}
+.flipcard:hover{border-color:var(--flip-accent);transform:translateY(-4px);}
+.flipcard .fc-emoji{font-size:2.4rem;}
+.flipcard h4{margin:12px 0 8px;font-size:1.35rem;color:var(--ink);}
+.flipcard p{font-size:1.02rem;line-height:1.5;color:var(--dim);margin:0;max-height:0;overflow:hidden;transition:max-height .3s ease;}
+.flipcard.open p{max-height:220px;margin-top:10px;}
+.flipcard .fc-hint{font-size:.82rem;color:var(--dim);opacity:.7;margin-top:10px;font-family:'JetBrains Mono';}
+
+.compare-row{display:flex;gap:24px;flex-wrap:wrap;margin-top:22px;}
+.compare-col{flex:1;min-width:300px;background:#fff;box-shadow:0 6px 18px rgba(42,27,77,.07);border-radius:18px;padding:24px 26px;border:2px solid rgba(42,27,77,.08);}
+.compare-col h4{margin-bottom:12px;font-size:1.3rem;color:var(--ink);}
+.compare-col.recipe{border-color:var(--pink);}
+.compare-col.community{border-color:var(--cyan);}
+.compare-col ul{margin:0;padding-left:20px;font-size:1.02rem;color:var(--dim);line-height:1.85;}
+
+/* ---------- case study ---------- */
+.case-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(420px,1fr));gap:24px;margin-top:12px;}
+.case-card{background:#fff;border:2px solid rgba(42,27,77,.08);box-shadow:0 6px 18px rgba(42,27,77,.07);border-radius:20px;padding:24px;}
+.case-card h5{font-family:'JetBrains Mono';font-size:.9rem;color:var(--accent);letter-spacing:.05em;margin-bottom:14px;text-transform:uppercase;}
+
+/* ---------- outro ---------- */
+.practice-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:18px;margin-top:18px;}
+.practice-card{background:#fff;border:2px solid rgba(42,27,77,.08);box-shadow:0 6px 18px rgba(42,27,77,.07);border-radius:18px;padding:22px;}
+.practice-card .pnum{font-family:'Baloo 2';font-size:1.7rem;color:var(--accent);}
+.refs{margin-top:32px;font-size:1rem;color:var(--dim);line-height:2;}
+.credit{margin-top:44px;text-align:center;color:var(--dim);font-size:.98rem;}
+
+/* ---------- package diagram ---------- */
+.pkg-row{display:flex;align-items:flex-start;gap:14px;flex-wrap:wrap;justify-content:center;}
+.pkg-box{position:relative;background:#fff;border:3px solid var(--box-accent,var(--accent));border-radius:0 14px 14px 14px;padding:18px 20px 20px;min-width:180px;text-align:left;margin-top:12px;color:var(--ink);box-shadow:0 6px 16px rgba(42,27,77,.08);}
+.pkg-box::before{content:'';position:absolute;top:-12px;left:0;width:44px;height:12px;background:var(--box-accent,var(--accent));border-radius:5px 5px 0 0;}
+.pkg-title{font-family:'Baloo 2';font-weight:800;font-size:1.1rem;text-align:center;margin-bottom:12px;}
+.pkg-classes{display:flex;flex-direction:column;gap:7px;}
+.pkg-class{background:rgba(42,27,77,.05);border:1.5px solid var(--box-accent,var(--accent));border-radius:7px;padding:6px 10px;font-family:'JetBrains Mono';font-weight:700;font-size:.85rem;color:var(--ink);text-align:center;}
+.pkg-arrow{display:flex;flex-direction:column;align-items:center;font-size:.78rem;color:var(--dim);font-family:'JetBrains Mono';margin-top:60px;}
+.pkg-arrow-line{width:54px;border-top:3px dashed var(--box-accent,var(--accent));position:relative;margin:6px 0;}
+.pkg-arrow-line::after{content:'▸';position:absolute;right:-10px;top:-12px;font-size:1.1rem;color:var(--box-accent,var(--accent));}
+
+@media (max-width:720px){
+  html{font-size:16px;}
+  .slide-inner{padding:110px 20px 80px;}
+  #dotnav{display:none;}
+  .navbtn{width:44px;height:44px;font-size:1.2rem;}
+  #nextBtn{right:16px;}
+  .example-card{padding:22px 20px 24px;}
+}
+</style>
+</head>
+<body>
+
+<div class="blob blob1"></div>
+<div class="blob blob2"></div>
+<div class="blob blob3"></div>
+<div class="blob blob4"></div>
+
+<div id="storybar"></div>
+<div id="topbar"><div id="brand">🧠 OOP: THE SERIES</div><div id="counter">1 / 15</div></div>
+<div id="dotnav"></div>
+<button class="navbtn" id="prevBtn">‹</button>
+<button class="navbtn" id="nextBtn">›</button>
+
+<div id="deck"></div>
+
+<script>
+/* ============================================================
+   RENDER HELPERS — small functions that build UML-ish diagrams
+   ============================================================ */
+function uBox(name, attrs, ops, opts={}){
+  const {abstract=false, stereotype=null, accent='var(--accent)', cls=''} = opts;
+  const attrHTML = (attrs && attrs.length) ? attrs.map(a=>`<div>${a}</div>`).join('') : '<div class="dim">—</div>';
+  let opsHTML = '';
+  if(ops !== null){
+    opsHTML = `<div class="uml-section uml-ops">${(ops && ops.length) ? ops.map(o=>`<div>${o}</div>`).join('') : '<div class="dim">—</div>'}</div>`;
+  }
+  return `<div class="uml-box ${abstract?'abstract':''} ${cls}" style="--box-accent:${accent}">
+    ${stereotype?`<div class="uml-stereo">«${stereotype}»</div>`:''}
+    <div class="uml-name">${name}</div>
+    <div class="uml-section uml-attrs">${attrHTML}</div>
+    ${opsHTML}
+  </div>`;
+}
+function oBox(instance, cls, vals, accent='var(--accent)'){
+  return `<div class="uml-box object-box" style="--box-accent:${accent}">
+    <div class="uml-name">${instance} : ${cls}</div>
+    <div class="uml-section">${vals.map(v=>`<div>${v}</div>`).join('')}</div>
+  </div>`;
+}
+function twoBoxRel({left,right,label='',arrow=true,leftMult='',rightMult='',leftRole='',rightRole='',marker=null,diamondSide='left',accent='var(--accent)',dashed=false}){
+  const isDia = marker==='agg' || marker==='comp';
+  const dia = isDia ? `<div class="diamond ${marker==='comp'?'filled':'hollow'}" style="--box-accent:${accent}"></div>` : '';
+  return `<div class="rel-diagram">
+    <div class="rel-end">${left}</div>
+    <div class="rel-mid" style="--box-accent:${accent}">
+      <div class="rel-mult-row"><span class="rel-mult">${leftMult||''}</span><span class="rel-mult">${rightMult||''}</span></div>
+      ${label?`<div class="rel-label">${label}${arrow?' ▸':''}</div>`:''}
+      <div class="rel-line-row">
+        ${diamondSide==='left'?dia:''}
+        <div class="rel-line ${dashed?'dashed':''}"></div>
+        ${diamondSide==='right'?dia:''}
+      </div>
+      ${(leftRole||rightRole)?`<div class="rel-role-row"><span class="rel-role">${leftRole||''}</span><span class="rel-role">${rightRole||''}</span></div>`:''}
+    </div>
+    <div class="rel-end">${right}</div>
+  </div>`;
+}
+function inheritDiagram(parentHTML, childrenArr, accent='var(--accent)'){
+  return `<div class="inherit-diagram" style="--box-accent:${accent}">
+    <div class="parent-slot">${parentHTML}</div>
+    <div class="tri-hollow"></div>
+    <div class="vline"></div>
+    <div class="children-row">
+      ${childrenArr.map(c=>`<div class="child-branch"><div class="stub"></div>${c}</div>`).join('')}
+    </div>
+  </div>`;
+}
+function assocClassDiagram(relHTML, classHTML, accent='var(--accent)'){
+  return `<div class="assocclass-wrap" style="--box-accent:${accent}">
+    ${relHTML}
+    <div class="dash-line"></div>
+    <div class="assocclass-box">${classHTML}</div>
+  </div>`;
+}
+function qualifierRel({left,right,qualifier,label='',leftMult='',rightMult='1',accent='var(--accent)'}){
+  return `<div class="rel-diagram">
+    <div class="rel-end-group">
+      <div class="rel-end">${left}</div>
+      <div class="qualifier-box" style="--box-accent:${accent}">🔑 ${qualifier}</div>
+    </div>
+    <div class="rel-mid" style="--box-accent:${accent}">
+      <div class="rel-mult-row"><span class="rel-mult">${leftMult||''}</span><span class="rel-mult">${rightMult||''}</span></div>
+      ${label?`<div class="rel-label">${label}</div>`:''}
+      <div class="rel-line-row"><div class="rel-line"></div></div>
+    </div>
+    <div class="rel-end">${right}</div>
+  </div>`;
+}
+function pkgBox(title, classes){
+  return `<div class="pkg-box">
+    <div class="pkg-title">📦 ${title}</div>
+    <div class="pkg-classes">${classes.map(c=>`<div class="pkg-class">${c}</div>`).join('')}</div>
+  </div>`;
+}
+function selfAssocDiagram(boxHTML, label, roleTop, roleBottom, accent='var(--accent)'){
+  return `<div class="self-assoc" style="--box-accent:${accent}">
+    <div class="self-box">${boxHTML}</div>
+    <svg class="self-loop" viewBox="0 0 110 130" width="130" height="150">
+      <defs><marker id="arrowhead" markerWidth="9" markerHeight="9" refX="6" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9 z" fill="${accent}"></path></marker></defs>
+      <path d="M8 22 C 95 8, 95 55, 12 60" fill="none" stroke="${accent}" stroke-width="4" marker-end="url(#arrowhead)"></path>
+      <path d="M12 70 C 95 75, 95 118, 8 105" fill="none" stroke="${accent}" stroke-width="4"></path>
+    </svg>
+    <div class="self-labels">
+      <div class="self-role top">${roleTop}</div>
+      <div class="self-label-mid">${label}</div>
+      <div class="self-role bottom">${roleBottom}</div>
+    </div>
+  </div>`;
+}
+function exampleCard({emoji,title,blurb,diagramHTML,syntax},i){
+  return `<div class="example-card reveal" style="--i:${i}">
+    <div class="example-head"><span class="example-emoji">${emoji}</span><h4>${title}</h4></div>
+    <div class="example-diagram">${diagramHTML}</div>
+    ${syntax?`<div class="syntax-chip"><code>${syntax}</code></div>`:''}
+    <p class="example-blurb">${blurb}</p>
+  </div>`;
+}
+function quizCard(item){
+  return `<div class="quiz-card">
+    <div class="quiz-q">${item.q}</div>
+    <div class="quiz-options">
+      ${item.options.map((opt,i)=>`<button class="quiz-opt" onclick="answerQuiz(this,${i},${item.correct})">${opt}</button>`).join('')}
+    </div>
+    <div class="quiz-explain"><div class="quiz-explain-inner">${item.explain}</div></div>
+  </div>`;
+}
+function renderQuizSection(quiz){
+  if(!quiz || !quiz.length) return '';
+  return `<div class="quiz-section reveal">
+    <h3 class="quiz-heading">🎯 Try It Yourself</h3>
+    <p class="quiz-subheading">No peeking — pick an answer, then watch it spill the tea 👇</p>
+    <div class="quiz-grid">${quiz.map(quizCard).join('')}</div>
+  </div>`;
+}
+function answerQuiz(btn, chosen, correct){
+  const card = btn.closest('.quiz-card');
+  if(!card || card.classList.contains('answered')) return;
+  card.classList.add('answered');
+  const opts = card.querySelectorAll('.quiz-opt');
+  opts.forEach((o,i)=>{
+    if(i===correct) o.classList.add('correct');
+    else if(i===chosen) o.classList.add('wrong');
+  });
+}
+function problemCard(num, item){
+  return `<div class="problem-card">
+    <div class="problem-head"><div class="problem-num">${num}</div><div class="problem-title">${item.emoji} ${item.title}</div></div>
+    <p class="problem-desc">${item.scenario}</p>
+    <button class="problem-reveal-btn" onclick="revealSolution(this)">🔍 Reveal UML Solution</button>
+    <div class="problem-solution"><div class="solution-diagrams">${item.blocks.map(b=>`<div class="solution-block"><div class="solution-block-label">${b.label}</div><div class="example-diagram">${b.html}</div></div>`).join('')}</div></div>
+  </div>`;
+}
+function revealSolution(btn){
+  const card = btn.closest('.problem-card');
+  card.classList.toggle('revealed');
+  btn.textContent = card.classList.contains('revealed') ? 'Hide Solution ▲' : '🔍 Reveal UML Solution';
+}
+
+/* ============================================================
+   COLOR CYCLE
+   ============================================================ */
+const PALETTE = ['#0BB4C4','#F0338B','#F5A300','#4CAF3D','#8B5CF6'];
+
+/* ============================================================
+   SLIDE DATA
+   ============================================================ */
+const SLIDES = [];
+
+/* ---------- 0: COVER ---------- */
+SLIDES.push({id:'cover', accent:PALETTE[0], extraClass:'cover-slide', render: s => `
+    <div class="slide-inner">
+      <div class="eyebrow-pill reveal">UNIT 01 · OBJECT-ORIENTED PARADIGM & CLASS MODELING</div>
+      <h1 class="cover-title reveal">Objects, Classes<br>& the whole squad 🧠✨</h1>
+      <p class="cover-sub reveal">Every app you scroll — Instagram, Spotify, Swiggy — is secretly just a bunch of objects politely texting each other. This is the visual, click-through, zero-cap version of Unit 1. Every concept comes with 5 real examples, the actual UML syntax, and a diagram you can actually picture.</p>
+      <div class="pillrow reveal">
+        ${['Objects','Classes','Links','Associations','Multiplicity','Inheritance','Aggregation','Composition','Enums','Packages'].map(p=>`<div class="pill">${p}</div>`).join('')}
+      </div>
+      <button class="startbtn reveal" onclick="goTo(1)">Let's gooo →</button>
+      <div class="coverfoot reveal">Professional Core Course · B.Tech II · AY 2025-26 · Prepared &amp; Taught by Prof. Bhumika · Sarvajanik University</div>
+    </div>`});
+
+/* ---------- 1: STORY OPEN — procedural vs OO + 4 pillars ---------- */
+SLIDES.push({id:'story', accent:PALETTE[1], render: s => `
+    <div class="slide-inner">
+      <div class="kicker reveal">The Origin Story</div>
+      <h2 class="slide-title reveal">Recipe vs. Group Project 🍳🤝</h2>
+      <p class="slide-tagline reveal">Before objects, code was written like a recipe — data just sat there while functions poked at it from every direction. OO said "nah" and turned code into a group project where everyone owns their own part.</p>
+      <div class="compare-row reveal">
+        <div class="compare-col recipe">
+          <h4>🍳 Procedural = a recipe</h4>
+          <ul>
+            <li>Data sits separately, functions poke it from outside</li>
+            <li>Asks: "what steps do I run?"</li>
+            <li>Any function can touch <code class="mono">balance</code> — no gatekeeper 😬</li>
+            <li>Change impact ripples everywhere</li>
+          </ul>
+        </div>
+        <div class="compare-col community">
+          <h4>🤝 OO = a group project</h4>
+          <ul>
+            <li>Data + behavior bundled inside objects</li>
+            <li>Asks: "which object should handle this?"</li>
+            <li>Only <code class="mono">BankAccount</code> can touch its own <code class="mono">balance</code> 🔒</li>
+            <li>Change stays inside one class</li>
+          </ul>
+        </div>
+      </div>
+      <div class="definition-box reveal" style="margin-top:24px;">This one question — <strong>"who's responsible?"</strong> — is the mindset for literally everything coming up. Keep asking it.</div>
+      <h3 class="reveal" style="margin-top:36px;font-size:1.3rem;">The Four Pillars (tap to reveal) 👇</h3>
+      <div class="pillar-grid reveal" id="pillarGrid"></div>
+    </div>`,
+  after: () => {
+    const data = [
+      {emoji:'🎯',accent:'#0BB4C4',title:'Abstraction',text:'Show only what matters, hide the rest. You drive with a wheel + pedals — not engine chemistry.'},
+      {emoji:'🔒',accent:'#F0338B',title:'Encapsulation',text:'Bundle data + behavior, protect internals. You order pasta — you don\'t enter the kitchen.'},
+      {emoji:'🧬',accent:'#4CAF3D',title:'Inheritance',text:'Reuse & specialize existing classes. SavingsAccount inherits balance + withdraw() from BankAccount for free.'},
+      {emoji:'🎭',accent:'#F5A300',title:'Polymorphism',text:'One message, many object-specific reactions. makeSound() means something different for a Dog, Cat & Duck.'}
+    ];
+    const grid = document.getElementById('pillarGrid');
+    if(grid) grid.innerHTML = data.map(d=>`<div class="flipcard" style="--flip-accent:${d.accent}" onclick="this.classList.toggle('open')">
+      <div class="fc-emoji">${d.emoji}</div><h4>${d.title}</h4><p>${d.text}</p><div class="fc-hint">tap for the tea ☕</div>
+    </div>`).join('');
+  }});
+
+/* ---------- 2: CLASSES & OBJECTS ---------- */
+SLIDES.push({id:'class-object', accent:PALETTE[2], kicker:'Part 1 · The Vocabulary', title:'Classes & Objects 🏠',
+  tagline:"A class is the blueprint. An object is the actual house built from it. One blueprint → unlimited houses, each with its own address (identity) and its own furniture (data).",
+  definition:"A <strong>class</strong> defines the attributes + operations every object of that type will have. An <strong>object</strong> is one specific instance — it has its own unique identity, even if its data looks identical to another object.",
+  syntaxLines:[
+    'ClassName            → 3-part box: Name / Attributes / Operations',
+    'attributeName: Type  → e.g. speed: Float',
+    'operationName()      → e.g. accelerate()',
+    'objectName : ClassName   → object box, name is <u>underlined</u>',
+    'attribute = value    → filled-in value inside an object box'
+  ],
+  examples:[
+    {emoji:'🚗',title:'Car (the OG example)',blurb:'A Car "knows" its own speed and fuel, and can accelerate itself. Attributes = what it knows, operations = what it can do.',
+      diagramHTML: uBox('Car',['speed: Float','fuelLevel: Float','color: String'],['accelerate()','brake()','refuel()'],{accent:'var(--box-a)'}),
+      syntax:'Car { speed, fuelLevel, color | accelerate(), brake(), refuel() }'},
+    {emoji:'🎓',title:'Student → 2 real students',blurb:'One Student class, unlimited student objects. Anaya and Kabir have totally different values but come from the exact same blueprint.',
+      diagramHTML: `<div style="display:flex;gap:20px;flex-wrap:nowrap;justify-content:center;overflow-x:auto;align-items:flex-start;">${uBox('Student',['name','rollNumber','cgpa'],['enroll()','submitAssignment()','calculateGPA()'])}${oBox('s1','Student',['name = Anaya','roll = 101','cgpa = 8.9'])}${oBox('s2','Student',['name = Kabir','roll = 102','cgpa = 7.6'])}</div>`,
+      syntax:'s1: Student {name=Anaya, roll=101}  ≠  s2: Student {name=Kabir, roll=102}'},
+    {emoji:'📸',title:'Instagram User class',blurb:'The app only models username, profilePhoto, followers — not your real height or blood type. Irrelevant details get left out on purpose.',
+      diagramHTML: uBox('User',['username','profilePhoto','followers'],['follow()','post()']),
+      syntax:'User { username, profilePhoto, followers | follow(), post() }'},
+    {emoji:'🏦',title:'BankAccount — locked down',blurb:'balance is locked inside, reachable only through withdraw(). This is exactly why banking apps model each account as a protected object.',
+      diagramHTML: uBox('BankAccount',['balance: Decimal'],['withdraw(amount)','deposit(amount)']),
+      syntax:'class BankAccount { balance; withdraw(amount){ this.balance -= amount } }'},
+    {emoji:'🎧',title:'Spotify Playlist',blurb:'name and songs are attributes. addSong() and shuffle() are operations — available on literally every playlist ever created, including yours.',
+      diagramHTML: uBox('Playlist',['name: String','songs: List'],['addSong()','shuffle()']),
+      syntax:'Playlist { name, songs | addSong(), shuffle() }'},
+    {emoji:'🎮',title:'GameCharacter → 2 heroes',blurb:'Same GameCharacter class, two totally different heroes. health and level are attributes; attack() and heal() are things every character can DO, no matter which one.',
+      diagramHTML: `<div style="display:flex;gap:20px;flex-wrap:nowrap;justify-content:center;overflow-x:auto;align-items:flex-start;">${uBox('GameCharacter',['health: Int','level: Int'],['attack()','heal()'])}${oBox('hero1','GameCharacter',['health = 100','level = 12'])}${oBox('hero2','GameCharacter',['health = 60','level = 7'])}</div>`,
+      syntax:'hero1: GameCharacter {health=100, level=12}  ≠  hero2: GameCharacter {health=60, level=7}'},
+    {emoji:'🌦️',title:'WeatherStation',blurb:'A WeatherStation object just sits there recording temperature and humidity — recordReading() is the one job it knows how to do, over and over.',
+      diagramHTML: uBox('WeatherStation',['temperature: Float','humidity: Float'],['recordReading()']),
+      syntax:'WeatherStation { temperature, humidity | recordReading() }'},
+    {emoji:'📖',title:'LibraryBook → 2 copies',blurb:'Two copies of the same book title can be two different objects — one checked out, one still on the shelf. isCheckedOut tracks each copy\'s own status independently.',
+      diagramHTML: `<div style="display:flex;gap:20px;flex-wrap:nowrap;justify-content:center;overflow-x:auto;align-items:flex-start;">${uBox('LibraryBook',['title','isbn','isCheckedOut'],['checkOut()','returnBook()'])}${oBox('b1','LibraryBook',['title = Dune','isCheckedOut = true'])}${oBox('b2','LibraryBook',['title = Dune','isCheckedOut = false'])}</div>`,
+      syntax:'b1.isCheckedOut = true  ≠  b2.isCheckedOut = false  (same title, different objects)'}
+  ],
+  remember:"Two objects can have <em>identical</em> attribute values and still be completely different objects — like two students both named Rahul. Identity, not data, is what makes them distinct.",
+  quiz:[
+    {q:'Which one is the class, which is the object? "ChocolateChipCookie" the RECIPE vs the cookie sitting in your hand right now.',options:['Recipe = class, cookie = object','Recipe = object, cookie = class','Both are objects','Both are classes'],correct:0,
+      explain:'🎯 Correct pick: A. The recipe is the blueprint (class) — every cookie baked from it is a separate object with its own crumbs and identity.'},
+    {q:'Two Instagram accounts both named "@foodlover" — are they the same object?',options:['Yes, same username = same object','No — different identities even with identical-looking data','Only if they have the same follower count','Only if they post the same photo'],correct:1,
+      explain:'🎯 Correct pick: B. Identity, not data, makes an object unique. Two accounts can look identical on paper and still be totally separate objects underneath.'},
+    {q:'In a Car class, which of these is an OPERATION, not an attribute?',options:['color','accelerate()','fuelLevel','speed'],correct:1,
+      explain:'🎯 Correct pick: B. Attributes are things a Car HAS (color, speed, fuel). accelerate() is something a Car DOES — that\'s always an operation, spot the parentheses!'},
+    {q:'You just wrote "s1 = new Student()". What did you just create?',options:['A new class','A new object/instance of Student','A new attribute','A new operation'],correct:1,
+      explain:'🎯 Correct pick: B. "new" always builds one specific instance from the blueprint — s1 is now a real object with its own identity, born from the Student class.'}
+  ]
+});
+
+/* ---------- 3: LINKS & ASSOCIATIONS ---------- */
+SLIDES.push({id:'association', accent:PALETTE[3], kicker:'Part 2 · No Object Is an Island', title:'Links & Associations 🔗',
+  tagline:'A link is one concrete connection between two real objects ("Rahul enrolled in CS101"). An association is the class-level RULE that produces every one of those links.',
+  definition:'Link : Object &nbsp;::&nbsp; Association : Class — same relationship, one level up. The most basic association is just a line between two boxes, with a label naming it. The ▸ arrow shows which way to <em>read</em> the label, not which way data flows.',
+  syntaxLines:[
+    'ClassA ────label▸──── ClassB     → association with reading direction',
+    '"objA : ClassA — label — objB : ClassB"   → a concrete link (one real fact)'
+  ],
+  examples:[
+    {emoji:'📚',title:'Student enrolls in Course',blurb:'The association is the rule. "rahul : Student — enrolls in — cs101 : Course" is one link — a single concrete fact produced by that rule.',
+      diagramHTML: twoBoxRel({left:uBox('Student',null,null),right:uBox('Course',null,null),label:'enrolls in'}),
+      syntax:'Student ────enrolls in▸──── Course'},
+    {emoji:'🛒',title:'Customer places Order',blurb:'This is the starting point for literally every e-commerce diagram you will ever draw. Everything else (multiplicity, roles) attaches to this same simple line.',
+      diagramHTML: twoBoxRel({left:uBox('Customer',null,null),right:uBox('Order',null,null),label:'places'}),
+      syntax:'Customer ────places▸──── Order'},
+    {emoji:'👔',title:'Employee manages Employee',blurb:'A class can link to itself! One Employee "manages" another Employee — this is called a self-association, and it needs role names to avoid total confusion.',
+      diagramHTML: selfAssocDiagram(uBox('Employee',null,null),'manages ▸','manager','subordinate'),
+      syntax:'Employee ────manages▸──── Employee  (self-association)'},
+    {emoji:'🛂',title:'Person holds PassportCard',blurb:'Not every relationship is mandatory both ways — a Person might hold zero or one passport, but every PassportCard belongs to exactly one Person.',
+      diagramHTML: twoBoxRel({left:uBox('Person',null,null),right:uBox('PassportCard',null,null),label:'holds'}),
+      syntax:'Person ────holds▸──── PassportCard'},
+    {emoji:'🛵',title:'Order delivered by DeliveryPartner',blurb:'The Swiggy/Zomato move — an Order needs to know who is bringing the food. This exact association gets an association class later (spoiler: grade-style extra data).',
+      diagramHTML: twoBoxRel({left:uBox('Order',null,null),right:uBox('DeliveryPartner',null,null),label:'delivered by'}),
+      syntax:'Order ────delivered by▸──── DeliveryPartner'},
+    {emoji:'🎥',title:'Director directs Movie',blurb:'A Director directs many Movies over a career — a simple, clean association that every streaming app\'s "More from this director" feature relies on.',
+      diagramHTML: twoBoxRel({left:uBox('Director',null,null),right:uBox('Movie',null,null),label:'directs'}),
+      syntax:'Director ────directs▸──── Movie'},
+    {emoji:'🏫',title:'Teacher teaches Course',blurb:'A Teacher teaches a Course — sounds obvious, but that obviousness is exactly the point. Most associations really are this simple once you strip away the notation.',
+      diagramHTML: twoBoxRel({left:uBox('Teacher',null,null),right:uBox('Course',null,null),label:'teaches'}),
+      syntax:'Teacher ────teaches▸──── Course'},
+    {emoji:'🚌',title:'Passenger boards Bus',blurb:'A Passenger boards a Bus — everyday commuting, modeled. This exact association will get a multiplicity next slide (spoiler: buses have seat limits).',
+      diagramHTML: twoBoxRel({left:uBox('Passenger',null,null),right:uBox('Bus',null,null),label:'boards'}),
+      syntax:'Passenger ────boards▸──── Bus'}
+  ],
+  remember:"Every notation you'll see from here — multiplicity, roles, qualifiers — is just extra detail bolted onto this one simple line.",
+  quiz:[
+    {q:'"Customer places Order" — what is this relationship called?',options:['Inheritance','Association','Composition','Enumeration'],correct:1,
+      explain:'🎯 Correct pick: B. A plain line connecting two classes, with a label naming the relationship — that\'s the textbook definition of an association.'},
+    {q:'In "Customer ──places▸── Order", what does the ▸ arrow actually mean?',options:['Data flows only toward Order','It shows which way to READ the label — nothing more','Order can\'t exist without Customer','The multiplicity is 1'],correct:1,
+      explain:'🎯 Correct pick: B. That little arrow is just a reading-direction hint ("Customer places Order", not "Order places Customer") — it says nothing about data flow or lifecycle.'},
+    {q:'Which pair is a self-association (a class linked to itself)?',options:['Student–Course','Employee–manages–Employee','Order–DeliveryPartner','Person–PassportCard'],correct:1,
+      explain:'🎯 Correct pick: B. Same class on both ends of the line — that\'s exactly what makes it a self-association, and exactly why it needs role names to stay unambiguous.'},
+    {q:'"rahul : Student — enrolls in — cs101 : Course" — is this a link or an association?',options:['A link (one concrete fact)','An association (the class-level rule)','Neither','Both, equally'],correct:0,
+      explain:'🎯 Correct pick: A. Real objects, real IDs, one specific fact — that\'s a link. The association is the general RULE that produces links like this one.'}
+  ]
+});
+
+/* ---------- 4: MULTIPLICITY ---------- */
+SLIDES.push({id:'multiplicity', accent:PALETTE[4], kicker:'Part 2 · How Many, Exactly?', title:'Multiplicity 🔢',
+  tagline:'Written right next to the line, at EACH end — multiplicity says how many objects can sit on that side of the link. Translate the numbers into a plain-English sentence every time.',
+  definition:'<strong>1</strong> = exactly one · <strong>0..1</strong> = optional (zero or one) · <strong>0..*</strong> = zero or many · <strong>1..*</strong> = at least one · exact numbers work too (a ChessBoard has exactly 64 Squares).',
+  syntaxLines:['A  ──1────────0..*──  B   → read as: "1 A has 0..* B"'],
+  examples:[
+    {emoji:'🛍️',title:'Customer ↔ Order',blurb:'1 Customer can have 0..* Orders — a brand-new customer may have zero orders so far, and that\'s totally fine.',
+      diagramHTML: twoBoxRel({left:uBox('Customer',null,null),right:uBox('Order',null,null),label:'places',leftMult:'1',rightMult:'0..*'}),
+      syntax:'Customer "1" ── places ▸ ── "0..*" Order'},
+    {emoji:'🧾',title:'Order ↔ OrderLine',blurb:'1 Order needs at LEAST 1..* OrderLines — an order literally cannot exist with zero line items. Nothing to deliver otherwise!',
+      diagramHTML: twoBoxRel({left:uBox('Order',null,null),right:uBox('OrderLine',null,null),label:'contains',leftMult:'1',rightMult:'1..*'}),
+      syntax:'Order "1" ── contains ▸ ── "1..*" OrderLine'},
+    {emoji:'🛂',title:'Person ↔ PassportCard',blurb:'1 Person, 0..1 PassportCard — not everyone has one, but if they do, it belongs to them alone. Classic optional relationship.',
+      diagramHTML: twoBoxRel({left:uBox('Person',null,null),right:uBox('PassportCard',null,null),label:'holds',leftMult:'1',rightMult:'0..1'}),
+      syntax:'Person "1" ── holds ▸ ── "0..1" PassportCard'},
+    {emoji:'🏦',title:'Bank ↔ Account',blurb:'1 Bank has 0..* Accounts — a bank can technically exist before it has opened a single account (day-one energy).',
+      diagramHTML: twoBoxRel({left:uBox('Bank',null,null),right:uBox('Account',null,null),label:'holds',leftMult:'1',rightMult:'0..*'}),
+      syntax:'Bank "1" ── holds ▸ ── "0..*" Account'},
+    {emoji:'♟️',title:'ChessBoard ↔ Square',blurb:'Exact numbers work too — a ChessBoard has EXACTLY 64 Squares. No more, no less, no negotiation.',
+      diagramHTML: twoBoxRel({left:uBox('ChessBoard',null,null),right:uBox('Square',null,null),label:'contains',leftMult:'1',rightMult:'64'}),
+      syntax:'ChessBoard "1" ── contains ▸ ── "64" Square'},
+    {emoji:'⚽',title:'Team ↔ Player',blurb:'A football Team needs AT LEAST 11 Players to even take the field — 1..* wouldn\'t be strict enough here, so exact minimums matter in real sports rules too.',
+      diagramHTML: twoBoxRel({left:uBox('Team',null,null),right:uBox('Player',null,null),label:'fields',leftMult:'1',rightMult:'11..*'}),
+      syntax:'Team "1" ── fields ▸ ── "11..*" Player'},
+    {emoji:'✈️',title:'Flight ↔ Seat',blurb:'A Flight has EXACTLY 180 Seats for this aircraft model — not "up to 180", not "at least 180". The plane was built with a fixed seat count.',
+      diagramHTML: twoBoxRel({left:uBox('Flight',null,null),right:uBox('Seat',null,null),label:'has',leftMult:'1',rightMult:'180'}),
+      syntax:'Flight "1" ── has ▸ ── "180" Seat'},
+    {emoji:'📱',title:'User ↔ Session',blurb:'1 User can have 0..* login Sessions — brand new users have zero, power users rack up dozens across devices. No upper limit needed.',
+      diagramHTML: twoBoxRel({left:uBox('User',null,null),right:uBox('Session',null,null),label:'starts',leftMult:'1',rightMult:'0..*'}),
+      syntax:'User "1" ── starts ▸ ── "0..*" Session'}
+  ],
+  remember:"By default a 'many' end is an unordered Set (no repeats). Need repeats or order? That's Bags and Sequences — coming right up.",
+  quiz:[
+    {q:'A ChessBoard has EXACTLY 64 Squares. What multiplicity do you write?',options:['0..*','1..*','64','0..1'],correct:2,
+      explain:'🎯 Correct pick: C. Exact numbers are totally valid multiplicities when the real world gives you a fixed count — no range needed.'},
+    {q:'"1 Order needs at least one OrderLine" — which multiplicity is that?',options:['0..1','0..*','1..*','1'],correct:2,
+      explain:'🎯 Correct pick: C. 1..* means "at least one, no upper limit" — an Order with zero line items makes no real-world sense, so zero is off the table.'},
+    {q:'A brand-new Customer with zero orders yet — what multiplicity allows that?',options:['1','1..*','0..*','64'],correct:2,
+      explain:'🎯 Correct pick: C. 0..* welcomes zero AND unlimited — perfect for a customer who just signed up and hasn\'t bought anything... yet.'},
+    {q:'"0..1" on the PassportCard end of Person–PassportCard means:',options:['Everyone has exactly one, mandatory','Optional — zero or one','Unlimited passports allowed','Exactly one, always required'],correct:1,
+      explain:'🎯 Correct pick: B. 0..1 is UML-speak for "optional, and if it exists, there\'s only one" — exactly how a real passport relationship works.'}
+  ]
+});
+
+/* ---------- 5: ROLES, NAVIGABILITY, ORDERING ---------- */
+SLIDES.push({id:'roles-nav', accent:PALETTE[0], kicker:'Part 2 · The Fine Print', title:'Roles, Navigability & Collections 👀',
+  tagline:'A role name says what an object IS to the other end. Navigability says who can actually "see" whom. And ordering/repeats decide whether your collection is a Set, a Bag, or a Sequence.',
+  definition:'<strong>Role name</strong>: label at an end, e.g. "manager" / "subordinate". <strong>Navigability</strong>: an arrowhead shows an end is reachable FROM the other — not every relationship has to work both ways. <strong>{ordered}</strong> marks a collection with a defined sequence.',
+  syntaxLines:['A ──roleA──/──roleB── B     → role names at each end','A ────────▸ B                → navigable one-direction (arrowhead)','/attribute {ordered}         → sequenced collection'],
+  examples:[
+    {emoji:'👔',title:'Employee self-association',blurb:'"Employee manages Employee" — wait, who manages whom?? Role names "manager" and "subordinate" remove ALL doubt.',
+      diagramHTML: selfAssocDiagram(uBox('Employee',null,null),'manages','manager','subordinate'),
+      syntax:'Employee.manager ── manages ▸ ── Employee.subordinate'},
+    {emoji:'💬',title:'Comment → Post (one-way)',blurb:'A Comment knows its Post, but a Post doesn\'t necessarily store a pointer back to every Comment. Bidirectional links = 2x the bookkeeping.',
+      diagramHTML: twoBoxRel({left:uBox('Comment',null,null),right:uBox('Post',null,null),label:'knows its'}),
+      syntax:'Comment ─────▸ Post   (one-directional, navigable)'},
+    {emoji:'🎵',title:'Playlist {ordered} songs',blurb:'A Playlist\'s songs MUST stay in order — track 1, then 2, then 3. The slash + {ordered} tag marks this as a sequenced collection, not just a pile.',
+      diagramHTML: twoBoxRel({left:uBox('Playlist',null,null),right:uBox('Song',null,null),label:'/songs {ordered}',rightMult:'1..*'}),
+      syntax:'Playlist ── /songs {ordered} ── Song'},
+    {emoji:'🛍️',title:'ShoppingCart = a Bag',blurb:'Bag: repeats OK, no order. Your cart can hold 2 units of the exact same snack — no problem, no ordering required either.',
+      diagramHTML: `<div style="font-family:'JetBrains Mono';font-size:1.7rem;font-weight:700;text-align:center;color:#B8790A;">{A, A, B, C}<div style="font-size:1rem;color:var(--dim);margin-top:12px;">repeats allowed · no order</div></div>`,
+      syntax:'ShoppingCart.items : Bag<Product>'},
+    {emoji:'⭐',title:'Wishlist = a Set',blurb:'Set: no repeats, no order — the default for a "many" end. You can\'t wishlist the same product twice; it just... stays wishlisted once.',
+      diagramHTML: `<div style="font-family:'JetBrains Mono';font-size:1.7rem;font-weight:700;text-align:center;color:var(--lime);">{A, B, C}<div style="font-size:1rem;color:var(--dim);margin-top:12px;">no repeats · no order (default)</div></div>`,
+      syntax:'Wishlist.items : Set<Product>'},
+    {emoji:'👨‍👩‍👧',title:'Person self-association: parent/child',blurb:'Same trick as manager/subordinate, different family tree. One Person class, linked to itself, with "parent" and "child" role names doing all the disambiguating work.',
+      diagramHTML: selfAssocDiagram(uBox('Person',null,null),'parentOf','parent','child'),
+      syntax:'Person.parent ── parentOf ▸ ── Person.child'},
+    {emoji:'🩺',title:'Doctor ↔ Patient (both-ways navigable)',blurb:'No arrowhead = navigable BOTH directions by default. A Doctor can look up their Patients, and a Patient can look up their Doctor — unlike the Comment → Post example.',
+      diagramHTML: twoBoxRel({left:uBox('Doctor',null,null),right:uBox('Patient',null,null),label:'treats',rightMult:'0..*',leftMult:'1'}),
+      syntax:'Doctor ────treats▸──── Patient   (no arrowhead = both ends navigable)'},
+    {emoji:'🎫',title:'Support Ticket Queue {ordered}',blurb:'A support team\'s ticket queue MUST stay first-in-first-out — {ordered} guarantees ticket #1 gets handled before ticket #2, every time.',
+      diagramHTML: twoBoxRel({left:uBox('SupportQueue',null,null),right:uBox('Ticket',null,null),label:'/tickets {ordered}',rightMult:'0..*'}),
+      syntax:'SupportQueue ── /tickets {ordered} ── Ticket'},
+    {emoji:'🔁',title:'Sequence: repeats AND order both matter',blurb:'The full Sequence flex — not just "has an order" but also allows the SAME item twice at different spots. This is the one true Playlist-replaying-a-song scenario.',
+      diagramHTML: `<div style="font-family:'JetBrains Mono';font-size:1.7rem;font-weight:700;text-align:center;color:#B8790A;">[A, C, A, B]<div style="font-size:1rem;color:var(--dim);margin-top:12px;">repeats allowed · order matters</div></div>`,
+      syntax:'Playlist.tracks : Sequence<Song>'}
+  ],
+  remember:'Set = no repeats no order · Bag = repeats OK no order · Sequence = repeats AND order both matter (a Playlist replaying a Song at two positions).',
+  quiz:[
+    {q:'Why does "Employee manages Employee" NEED role names?',options:['It looks nicer on the slide','Because it\'s a self-association and you literally can\'t tell who\'s who otherwise','UML makes it mandatory always','It doesn\'t actually need them'],correct:1,
+      explain:'🎯 Correct pick: B. Whenever a class links to ITSELF, "manages" alone is ambiguous — role names like "manager" and "subordinate" are the only thing saving you from total chaos.'},
+    {q:'A Comment → Post arrow (one-directional) means:',options:['Post also stores a link back to every single Comment','Only Comment can "see"/navigate to its Post — not necessarily the reverse','Comments literally cannot exist without a Post','There must be many Posts per Comment'],correct:1,
+      explain:'🎯 Correct pick: B. Navigability is a DESIGN choice, not a rule about existence. One-directional just means the pointer only goes one way in code.'},
+    {q:'Your cart has 2 of the exact same chocolate bar. What kind of collection is that?',options:['Set','Bag','Sequence','Enum'],correct:1,
+      explain:'🎯 Correct pick: B. Repeats allowed, no particular order required — that\'s the textbook definition of a Bag. Your snack hoarding is 100% valid UML.'},
+    {q:'A Playlist replaying the same song at two different spots — Set, Bag, or Sequence?',options:['Set','Bag','Sequence','None of these'],correct:2,
+      explain:'🎯 Correct pick: C. Repeats AND order both matter here — track position is part of the meaning. That\'s a Sequence, the fanciest of the three.'}
+  ]
+});
+
+/* ---------- 6: ASSOCIATION CLASSES & QUALIFIERS ---------- */
+SLIDES.push({id:'assocclass-qualifier', accent:PALETTE[1], kicker:'Part 2 · When Relationships Have Data', title:'Association Classes & Qualifiers 🎓',
+  tagline:"Sometimes the RELATIONSHIP itself needs its own data — not the class on either side. And sometimes you need a key to instantly narrow 'many' down to exactly 'one'. Meet both tricks.",
+  definition:'<strong>Association class</strong>: drawn as a class box connected to the line with a dashed line — it behaves like BOTH a class and an association. <strong>Qualifier</strong>: a small box at the class end holding a lookup key, narrowing one-to-many into an effective one-to-one.',
+  syntaxLines:['A ────B  with a dashed line down to [ AssocClassName ]','A ──[qualifierAttr]── "1" B     → given the qualifier, exactly one B'],
+  examples:[
+    {emoji:'📝',title:'Student — Enrollment — Course',blurb:'grade and enrollDate belong to the ENROLLMENT itself, not to Student or Course alone. Where else would a grade even live?',
+      diagramHTML: assocClassDiagram(twoBoxRel({left:uBox('Student',null,null),right:uBox('Course',null,null)}), uBox('Enrollment',['grade','enrollDate'],null)),
+      syntax:'Student ──── Course  ┊ Enrollment{grade, enrollDate}'},
+    {emoji:'🛵',title:'Order — Assignment — DeliveryPartner',blurb:'assignedAt and deliveryRating live on the Order–DeliveryPartner LINK itself — the real-world Swiggy/Zomato parallel.',
+      diagramHTML: assocClassDiagram(twoBoxRel({left:uBox('Order',null,null),right:uBox('DeliveryPartner',null,null)}), uBox('Assignment',['assignedAt','deliveryRating'],null)),
+      syntax:'Order ──── DeliveryPartner  ┊ Assignment{assignedAt, deliveryRating}'},
+    {emoji:'🏦',title:'Bank, given accountNumber → 1 Account',blurb:'Read it as "given a Bank AND an accountNumber, there is exactly ONE matching Account." The qualifier acts like a key or index.',
+      diagramHTML: qualifierRel({left:uBox('Bank',null,null),right:uBox('Account',null,null),qualifier:'accountNumber',leftMult:'1'}),
+      syntax:'Bank ──[accountNumber]── "1" Account'},
+    {emoji:'🗂️',title:'Folder, given fileName → 1 File',blurb:'Same exact pattern as the bank example — a Folder contains many Files, but GIVEN a fileName, you land on exactly one.',
+      diagramHTML: qualifierRel({left:uBox('Folder',null,null),right:uBox('File',null,null),qualifier:'fileName',leftMult:'1'}),
+      syntax:'Folder ──[fileName]── "1" File'},
+    {emoji:'🎬',title:'Booking — Movie — Seat',blurb:'price and bookingTime belong to the Booking itself, connecting a Movie showtime to a specific Seat — another textbook association class.',
+      diagramHTML: assocClassDiagram(twoBoxRel({left:uBox('Movie',null,null),right:uBox('Seat',null,null)}), uBox('Booking',['price','bookingTime'],null)),
+      syntax:'Movie ──── Seat  ┊ Booking{price, bookingTime}'},
+    {emoji:'🏨',title:'Hotel, given roomNumber → 1 Room',blurb:'Same qualifier trick, hospitality edition. A Hotel has many Rooms, but GIVEN a roomNumber, front desk lands on exactly one — no scrolling through a list.',
+      diagramHTML: qualifierRel({left:uBox('Hotel',null,null),right:uBox('Room',null,null),qualifier:'roomNumber',leftMult:'1'}),
+      syntax:'Hotel ──[roomNumber]── "1" Room'},
+    {emoji:'🎮',title:'Player — MatchResult — Game',blurb:'score and playedAt describe THIS specific match between a Player and a Game — not the Player\'s profile, not the Game\'s rules. Classic leaderboard modeling.',
+      diagramHTML: assocClassDiagram(twoBoxRel({left:uBox('Player',null,null),right:uBox('Game',null,null)}), uBox('MatchResult',['score','playedAt'],null)),
+      syntax:'Player ──── Game  ┊ MatchResult{score, playedAt}'},
+    {emoji:'📱',title:'ContactBook, given phoneNumber → 1 Contact',blurb:'Your phone does this every time you get a call — GIVEN the incoming phoneNumber, it looks up exactly one matching Contact to show a name instead of digits.',
+      diagramHTML: qualifierRel({left:uBox('ContactBook',null,null),right:uBox('Contact',null,null),qualifier:'phoneNumber',leftMult:'1'}),
+      syntax:'ContactBook ──[phoneNumber]── "1" Contact'},
+    {emoji:'📚',title:'Member — Membership — Library',blurb:'joinDate and tier belong to the MEMBERSHIP itself — a Member could theoretically join two different libraries with two different tiers, each its own Membership record.',
+      diagramHTML: assocClassDiagram(twoBoxRel({left:uBox('Member',null,null),right:uBox('Library',null,null)}), uBox('Membership',['joinDate','tier'],null)),
+      syntax:'Member ──── Library  ┊ Membership{joinDate, tier}'}
+  ],
+  remember:"Whenever an attribute doesn't cleanly belong to either class, ask: 'does this belong to the LINK itself?' That question IS the association-class test.",
+  quiz:[
+    {q:'Where should "grade" live: Student, Course, or the Enrollment link itself?',options:['Student','Course','The Enrollment (association class)','Neither — just delete it'],correct:2,
+      explain:'🎯 Correct pick: C. A grade only makes sense for ONE specific student-course pairing — that\'s the definition of data belonging to the link, not either class alone.'},
+    {q:'"Bank, given accountNumber → exactly 1 Account" is an example of:',options:['Composition','A qualified association','Generalization','An enumeration'],correct:1,
+      explain:'🎯 Correct pick: B. The qualifier (accountNumber) acts like a key that narrows "many Accounts" down to exactly one — that\'s the whole point of qualified associations.'},
+    {q:'What kind of line connects an association class to its association?',options:['A thick solid line','A dashed line','A hollow triangle','A filled diamond'],correct:1,
+      explain:'🎯 Correct pick: B. The dashed line is the visual signal that "this class is secretly attached to that relationship" — not a separate stand-alone class.'},
+    {q:'You keep asking "does this belong to the LINK itself?" and the answer is yes. You need a(n):',options:['Enumeration','Association class','Package','Abstract class'],correct:1,
+      explain:'🎯 Correct pick: B. That question IS the association-class litmus test — once the answer is yes, you know exactly which tool to reach for.'}
+  ]
+});
+
+/* ---------- 7: GENERALIZATION & INHERITANCE ---------- */
+SLIDES.push({id:'inheritance', accent:PALETTE[2], kicker:'Part 4 · The "Is-A" Relationship', title:'Generalization & Inheritance 🧬',
+  tagline:'SavingsAccount IS-A BankAccount. Dog IS-A Animal. If two classes share attributes and operations, pull the shared stuff up into one parent class — the "is-a" test tells you when this fits.',
+  definition:'The hollow triangle △ points to the PARENT (a super common mistake is drawing it backwards — the arrow always points UP toward the general class). Children inherit everything automatically, without rewriting a single line.',
+  syntaxLines:['ParentClass', '   △  (hollow triangle points to parent)', '   │', 'ChildA   ChildB   ChildC'],
+  examples:[
+    {emoji:'🏦',title:'BankAccount family',blurb:'SavingsAccount and CurrentAccount both inherit balance + withdraw() from BankAccount for free, then add their own extra bits.',
+      diagramHTML: inheritDiagram(uBox('BankAccount',['balance'],['withdraw()']), [uBox('SavingsAccount',['interestRate'],null),uBox('CurrentAccount',['overdraftLimit'],null)]),
+      syntax:'class SavingsAccount extends BankAccount { interestRate }'},
+    {emoji:'🛺',title:'Vehicle → Bike, Auto, Car',blurb:'All three inherit shared driverName and rating from a general Vehicle class, while each adds its own specifics. Classic ride-hailing app model.',
+      diagramHTML: inheritDiagram(uBox('Vehicle',['driverName','rating'],null), [uBox('Bike',null,null),uBox('Auto',null,null),uBox('Car',null,null)]),
+      syntax:'class Bike extends Vehicle { }'},
+    {emoji:'💳',title:'PaymentMethod family',blurb:'UPIPayment, CardPayment, WalletPayment all inherit shared processPayment() scaffolding. Fix a bug in the parent, every child benefits instantly.',
+      diagramHTML: inheritDiagram(uBox('PaymentMethod',null,['processPayment()']), [uBox('UPIPayment',null,null),uBox('CardPayment',null,null),uBox('WalletPayment',null,null)]),
+      syntax:'class UPIPayment extends PaymentMethod { }'},
+    {emoji:'🔔',title:'Notification family',blurb:'Email, SMS, and Push Notification all inherit shared scheduling logic, each just overriding send() to do its own thing.',
+      diagramHTML: inheritDiagram(uBox('Notification',null,['schedule()','send()']), [uBox('Email',null,['send()']),uBox('SMS',null,['send()']),uBox('Push',null,['send()'])]),
+      syntax:'class Email extends Notification { send() { ...overridden } }'},
+    {emoji:'🔺',title:'Shape (abstract) → Circle, Square',blurb:'Shape is italicized because it\'s ABSTRACT — you can never write "new Shape()". Only Circle and Square can actually be built.',
+      diagramHTML: inheritDiagram(uBox('Shape',null,['area() {abstract}'],{abstract:true}), [uBox('Circle',null,['area()']),uBox('Square',null,['area()'])]),
+      syntax:'abstract class Shape { abstract area(); }'},
+    {emoji:'🐾',title:'Animal → Dog, Cat, Bird',blurb:'The classic zoo example for a reason — Dog, Cat, and Bird all inherit shared name and age from Animal, each adding its own specialized behavior (bark, meow, fly).',
+      diagramHTML: inheritDiagram(uBox('Animal',['name','age'],['eat()']), [uBox('Dog',null,['bark()']),uBox('Cat',null,['meow()']),uBox('Bird',null,['fly()'])]),
+      syntax:'class Dog extends Animal { bark() { ... } }'},
+    {emoji:'💼',title:'Employee → Manager, Developer, Designer',blurb:'Every role inherits shared employeeId and salary from Employee, then adds role-specific responsibilities — a very common HR-system class hierarchy.',
+      diagramHTML: inheritDiagram(uBox('Employee',['employeeId','salary'],null), [uBox('Manager',null,['approveLeave()']),uBox('Developer',null,['writeCode()']),uBox('Designer',null,['createMockup()'])]),
+      syntax:'class Developer extends Employee { writeCode() { ... } }'},
+    {emoji:'📄',title:'Document → PDFDocument, WordDocument, ImageFile',blurb:'A file manager app treats every file type as a Document underneath — same shared open()/save() contract, wildly different internal formats.',
+      diagramHTML: inheritDiagram(uBox('Document',['fileName','size'],['open()','save()']), [uBox('PDFDocument',null,null),uBox('WordDocument',null,null),uBox('ImageFile',null,null)]),
+      syntax:'class PDFDocument extends Document { }'}
+  ],
+  remember:"Overriding + polymorphism = the real payoff: call withdraw() on a mixed list of accounts, and each object runs its OWN version automatically — zero if/else needed.",
+  quiz:[
+    {q:'SavingsAccount IS-A BankAccount. What UML notation shows this?',options:['A filled diamond','A hollow diamond','A hollow triangle pointing to the parent','A dashed arrow'],correct:2,
+      explain:'🎯 Correct pick: C. The hollow triangle is generalization\'s signature move — and it always points UP toward the more general (parent) class.'},
+    {q:'A super common student mistake with the inheritance triangle is:',options:['Making it too big','Drawing it pointing to the CHILD instead of the parent','Coloring it wrong','Forgetting to label it'],correct:1,
+      explain:'🎯 Correct pick: B. It\'s an easy slip — but the triangle ALWAYS points to the general/parent class, never down toward the specialized children.'},
+    {q:'SavingsAccount overrides withdraw() to add a minimum-balance check. This is:',options:['Composition','Overriding / polymorphism','Aggregation','A qualifier'],correct:1,
+      explain:'🎯 Correct pick: B. Same method name, child-specific behavior — that\'s overriding in action, the mechanism behind polymorphism.'},
+    {q:'Why is inheritance actually useful? Pick the BEST answer.',options:['It makes diagrams look prettier','Fix a bug in the parent, every child benefits instantly — pure code reuse','It\'s legally required in UML','It removes the need for classes'],correct:1,
+      explain:'🎯 Correct pick: B. That instant ripple-down fix is the entire payoff — shared logic lives in ONE place instead of being copy-pasted into every child.'}
+  ]
+});
+
+/* ---------- 8: AGGREGATION vs COMPOSITION ---------- */
+SLIDES.push({id:'agg-comp', accent:PALETTE[3], kicker:'Part 5 · Whole-Part Structures', title:'Aggregation ◇ vs. Composition ◆',
+  tagline:"Both are a 'has-a' relationship. The only question that matters: can the PART survive without THIS specific whole? Same diamond shape, opposite meaning — hollow vs. filled.",
+  definition:'<strong>Aggregation (hollow ◇)</strong>: disband the Team, the Players still exist — they can join another team. <strong>Composition (filled ◆)</strong>: demolish the House, the Rooms go with it. The diamond always sits at the WHOLE end.',
+  syntaxLines:['Whole ◇──── Part   → aggregation (part survives)','Whole ◆──── Part   → composition (part dies with whole)'],
+  examples:[
+    {emoji:'⚽',title:'Team ◇ Player',blurb:'If the Team disbands, the Players don\'t cease to exist — they can absolutely join another team. Classic aggregation.',
+      diagramHTML: twoBoxRel({left:uBox('Team',null,null),right:uBox('Player',null,null),marker:'agg',diamondSide:'left',leftMult:'1',rightMult:'0..*'}),
+      syntax:'Team ◇──── "0..*" Player   (aggregation)'},
+    {emoji:'🎓',title:'University ◇ Department',blurb:'A Department could technically be dissolved from one university and merged elsewhere — it has an identity beyond just belonging to this one university.',
+      diagramHTML: twoBoxRel({left:uBox('University',null,null),right:uBox('Department',null,null),marker:'agg',diamondSide:'left',leftMult:'1',rightMult:'1..*'}),
+      syntax:'University ◇──── "1..*" Department   (aggregation)'},
+    {emoji:'🎧',title:'Playlist ◇ Song',blurb:'Delete the playlist, the songs stay in the catalog — they were never exclusively "owned" by that one playlist to begin with.',
+      diagramHTML: twoBoxRel({left:uBox('Playlist',null,null),right:uBox('Song',null,null),marker:'agg',diamondSide:'left',leftMult:'1',rightMult:'0..*'}),
+      syntax:'Playlist ◇──── "0..*" Song   (aggregation)'},
+    {emoji:'🏠',title:'House ◆ Room',blurb:'If the House object is destroyed, its Room objects are destroyed with it. A Room, in this model, makes zero sense detached from a house.',
+      diagramHTML: twoBoxRel({left:uBox('House',null,null),right:uBox('Room',null,null),marker:'comp',diamondSide:'left',leftMult:'1',rightMult:'1..*'}),
+      syntax:'House ◆──── "1..*" Room   (composition)'},
+    {emoji:'🧾',title:'Order ◆ OrderLine',blurb:'Delete an Order, and its OrderLine items get deleted too — an OrderLine literally has no meaning existing alone.',
+      diagramHTML: twoBoxRel({left:uBox('Order',null,null),right:uBox('OrderLine',null,null),marker:'comp',diamondSide:'left',leftMult:'1',rightMult:'1..*'}),
+      syntax:'Order ◆──── "1..*" OrderLine   (composition)'},
+    {emoji:'🚗',title:'Car ◆ Engine',blurb:'This specific Engine was built as part of this specific Car — scrap the car, the engine (as modeled here) is gone with it. Textbook composition.',
+      diagramHTML: twoBoxRel({left:uBox('Car',null,null),right:uBox('Engine',null,null),marker:'comp',diamondSide:'left',leftMult:'1',rightMult:'1'}),
+      syntax:'Car ◆──── "1" Engine   (composition)'},
+    {emoji:'🏫',title:'Classroom ◇ Student',blurb:'Empty out the Classroom, the Students don\'t disappear — they walk to their next class. Students have a life (and identity) well beyond one room.',
+      diagramHTML: twoBoxRel({left:uBox('Classroom',null,null),right:uBox('Student',null,null),marker:'agg',diamondSide:'left',leftMult:'1',rightMult:'0..*'}),
+      syntax:'Classroom ◇──── "0..*" Student   (aggregation)'},
+    {emoji:'❤️',title:'Human ◆ Heart',blurb:'About as composition as composition gets — a Heart modeled as part of a Human has no independent existence in this system. They live and die together.',
+      diagramHTML: twoBoxRel({left:uBox('Human',null,null),right:uBox('Heart',null,null),marker:'comp',diamondSide:'left',leftMult:'1',rightMult:'1'}),
+      syntax:'Human ◆──── "1" Heart   (composition)'}
+  ],
+  remember:"The difference is entirely about ownership STRENGTH, not the shape. Same diamond, one fill color — completely different lifecycle rule.",
+  quiz:[
+    {q:'Disband a Team — do the Players still exist?',options:['Yes → aggregation (hollow ◇)','No → composition (filled ◆)','They vanish instantly','Can\'t be determined'],correct:0,
+      explain:'🎯 Correct pick: A. Players outlive the team and can join a new one — that survival is exactly what makes this aggregation, hollow diamond and all.'},
+    {q:'Delete a House — what happens to its Rooms (in this model)?',options:['They survive and move out on their own','They get deleted too → composition (filled ◆)','They become their own House','Nothing happens to them'],correct:1,
+      explain:'🎯 Correct pick: B. A Room has no life outside its House in this model — that "dies together" rule is composition\'s whole identity.'},
+    {q:'Where does the diamond symbol always sit on the diagram?',options:['At the PART end','At the WHOLE end','Right in the middle of the line','On both ends'],correct:1,
+      explain:'🎯 Correct pick: B. The diamond always touches the WHOLE (the owner) — never the part. Easy way to remember: the whole "swallows" the diamond.'},
+    {q:'University ◇ Department — why is this aggregation, not composition?',options:['A Department could exist/move independently of one specific university','Departments are always destroyed with the university','There\'s no real relationship here','It should actually be composition'],correct:0,
+      explain:'🎯 Correct pick: A. Departments have a life of their own — they could theoretically merge, move, or restructure independently, so the ownership is looser: aggregation.'}
+  ]
+});
+
+/* ---------- 9: ABSTRACT CLASSES & MULTIPLE INHERITANCE ---------- */
+SLIDES.push({id:'abstract-multi', accent:PALETTE[4], kicker:'Part 5 · Class Hierarchies Get Real', title:'Abstract Classes & the Diamond Problem ◈',
+  tagline:'An abstract class defines a contract every subclass must fulfil — but can never be built directly. And when a class inherits from TWO parents at once, things get spicy.',
+  definition:'<strong>Abstract class</strong>: italic name in UML, can never be instantiated ("new Shape()" is illegal). <strong>Diamond problem</strong>: if TeachingAssistant inherits from both Student and Employee, and both define display() from a shared Person ancestor — which version wins?',
+  syntaxLines:['abstract class Shape { abstract area(); }','class TeachingAssistant extends Student, Employee { }   ← ambiguous!'],
+  examples:[
+    {emoji:'🔺',title:'Shape → Circle, Square',blurb:'area() is unimplemented at the Shape level — only subclasses actually know how to calculate their own area. Shape exists purely to define the shared contract.',
+      diagramHTML: inheritDiagram(uBox('Shape',null,['area() {abstract}'],{abstract:true}),[uBox('Circle',null,['area()']),uBox('Square',null,['area()'])]),
+      syntax:'abstract class Shape { abstract area(); }'},
+    {emoji:'◈',title:'Person → Student & Employee → TA',blurb:'A TeachingAssistant genuinely IS both a Student and an Employee. If both define display() from Person, which display() does TA actually get? That\'s the diamond problem.',
+      diagramHTML: `<div style="display:flex;flex-direction:column;align-items:center;gap:6px;">${uBox('Person',null,null)}<div style="display:flex;gap:40px;margin-top:6px;"><div style="display:flex;flex-direction:column;align-items:center;">${uBox('Student',null,['display()'])}</div><div style="display:flex;flex-direction:column;align-items:center;">${uBox('Employee',null,['display()'])}</div></div><div style="margin-top:6px;font-size:1.4rem;color:var(--yellow);">◈</div>${uBox('TeachingAssistant',null,['display() = ???'])}</div>`,
+      syntax:'class TeachingAssistant extends Student, Employee { display() = ??? }'},
+    {emoji:'🛠️',title:'How real languages dodge it',blurb:'C++ allows multiple inheritance and makes you resolve it explicitly. Java/C# forbid it for classes entirely — use interfaces instead. Python/Ruby offer mixins with a clear resolution order.',
+      diagramHTML: `<div class="legend-grid" style="grid-template-columns:1fr;gap:8px;"><div class="legend-item"><div class="legend-sym">C++</div><div class="legend-txt">ta.Student::display() — explicit resolution</div></div><div class="legend-item"><div class="legend-sym">Java / C#</div><div class="legend-txt">Interfaces, not classes — no shared code to conflict</div></div><div class="legend-item"><div class="legend-sym">Python / Ruby</div><div class="legend-txt">Mixins/traits — composable chunks, clear order</div></div></div>`,
+      syntax:'"Favor composition over inheritance" — one of the most-quoted rules in software design'},
+    {emoji:'🐧',title:'Bird (abstract) → Sparrow, Penguin',blurb:'Every Bird can fly()... except a Penguin. This is exactly why "abstract" doesn\'t mean "identical behavior" — each subclass gets to implement fly() its own honest way (Penguin\'s might just throw an error or waddle).',
+      diagramHTML: inheritDiagram(uBox('Bird',null,['fly() {abstract}'],{abstract:true}), [uBox('Sparrow',null,['fly()']),uBox('Penguin',null,['fly() = nope'])]),
+      syntax:'abstract class Bird { abstract fly(); }'},
+    {emoji:'💳',title:'PaymentGateway (abstract) → Razorpay, Stripe',blurb:'Every real payment provider MUST implement charge() — PaymentGateway just defines that contract without caring how each one actually talks to a bank.',
+      diagramHTML: inheritDiagram(uBox('PaymentGateway',null,['charge() {abstract}'],{abstract:true}), [uBox('RazorpayGateway',null,['charge()']),uBox('StripeGateway',null,['charge()'])]),
+      syntax:'abstract class PaymentGateway { abstract charge(amount); }'},
+    {emoji:'🚗✈️',title:'Car + Airplane → FlyingCar (multiple inheritance)',blurb:'Half sci-fi, half genuine diamond-problem bait: if both Car and Airplane define move(), which move() does FlyingCar actually inherit? This is the scenario multiple inheritance rules exist to resolve.',
+      diagramHTML: `<div style="display:flex;flex-direction:column;align-items:center;gap:6px;"><div style="display:flex;gap:40px;">${uBox('Car',null,['move()'])}${uBox('Airplane',null,['move()'])}</div><div style="margin-top:6px;font-size:1.4rem;color:var(--yellow);">◈</div>${uBox('FlyingCar',null,['move() = ???'])}</div>`,
+      syntax:'class FlyingCar extends Car, Airplane { move() = ??? }'},
+    {emoji:'🧩',title:'Interfaces sidestep it: Drawable + Serializable → Icon',blurb:'This is how Java/C# actually let you "inherit" from two sources safely — interfaces define WHAT must be implemented, never HOW, so there\'s no shared code left to fight over.',
+      diagramHTML: `<div style="display:flex;flex-direction:column;align-items:center;gap:6px;"><div style="display:flex;gap:40px;">${uBox('Drawable',null,['draw()'],{stereotype:'interface'})}${uBox('Serializable',null,['serialize()'],{stereotype:'interface'})}</div><div style="margin:6px 0;font-size:1.1rem;color:var(--dim);font-family:'JetBrains Mono';">implements ▴</div>${uBox('Icon',null,['draw()','serialize()'])}</div>`,
+      syntax:'class Icon implements Drawable, Serializable { }   // no shared code, no conflict'},
+    {emoji:'🏢',title:'Employee (abstract) → FullTimeEmployee, Contractor',blurb:'calculatePay() means something completely different for a salaried FullTimeEmployee vs. an hourly Contractor — Employee just guarantees every subclass HAS one.',
+      diagramHTML: inheritDiagram(uBox('Employee',null,['calculatePay() {abstract}'],{abstract:true}), [uBox('FullTimeEmployee',null,['calculatePay()']),uBox('Contractor',null,['calculatePay()'])]),
+      syntax:'abstract class Employee { abstract calculatePay(); }'}
+  ],
+  remember:'If you can never say "new X()" for a class, it\'s abstract. If a class inherits from two unrelated parents with a shared ancestor, watch for the diamond.',
+  quiz:[
+    {q:'Can you ever legally write "new Shape()" if Shape is abstract?',options:['Yes, anytime you want','No — abstract classes can never be instantiated directly','Only on Tuesdays','Only if Shape has zero methods'],correct:1,
+      explain:'🎯 Correct pick: B. "Abstract" literally means incomplete-on-purpose — you must build a concrete subclass (Circle, Square) before you can ever say "new".'},
+    {q:'How is an abstract class name usually shown in a UML diagram?',options:['Bold','Underlined','Italicized','Written in all caps'],correct:2,
+      explain:'🎯 Correct pick: C. Italics are the UML convention for "this class can\'t be instantiated" — a subtle visual flag worth remembering.'},
+    {q:'TeachingAssistant inherits from BOTH Student and Employee. What\'s this scenario called?',options:['Composition','Multiple inheritance (watch for the diamond problem!)','Encapsulation','Qualification'],correct:1,
+      explain:'🎯 Correct pick: B. Two parents at once = multiple inheritance — and if both parents share a grandparent method, you\'ve got yourself a diamond problem.'},
+    {q:'How do Java and C# dodge the diamond problem for classes?',options:['They allow it freely, no restrictions','They forbid multiple class inheritance — use interfaces instead','They silently ignore the conflict','They auto-delete one parent'],correct:1,
+      explain:'🎯 Correct pick: B. No shared implementation code to fight over means no diamond in the first place — interfaces sidestep the whole mess.'}
+  ]
+});
+
+/* ---------- 10: ENUMERATIONS ---------- */
+SLIDES.push({id:'enum', accent:PALETTE[0], kicker:'Part 4 · A Fixed Menu', title:'Enumerations 🚦',
+  tagline:'A plain string field could accidentally be "Shiped" (typo) or "In Transit" (not even real). An enum makes invalid values physically impossible — you can only ever pick from the menu.',
+  definition:'Drawn as a class box stereotyped «enumeration», listing allowed literal values instead of attributes/operations. Nothing outside the list is valid — the type system enforces it for you.',
+  syntaxLines:['«enumeration»','EnumName','  VALUE_ONE','  VALUE_TWO','  VALUE_THREE'],
+  examples:[
+    {emoji:'📦',title:'OrderStatus',blurb:'An Order\'s status can ONLY ever be one of these five values. No "Shiped" typos, no made-up states — ever.',
+      diagramHTML: uBox('OrderStatus',['PLACED','CONFIRMED','SHIPPED','DELIVERED','CANCELLED'],null,{stereotype:'enumeration'}),
+      syntax:'«enumeration» OrderStatus { PLACED, CONFIRMED, SHIPPED, DELIVERED, CANCELLED }'},
+    {emoji:'🚦',title:'TrafficLight',blurb:'The original enum energy — a traffic light can only ever be one of three colors. There is no fourth option, and there never will be.',
+      diagramHTML: uBox('TrafficLight',['RED','YELLOW','GREEN'],null,{stereotype:'enumeration'}),
+      syntax:'«enumeration» TrafficLight { RED, YELLOW, GREEN }'},
+    {emoji:'📅',title:'DayOfWeek',blurb:'Seven values, no more, no less. Days of the week are the textbook example every professor uses for a reason — it just works.',
+      diagramHTML: uBox('DayOfWeek',['MON','TUE','WED','THU','FRI','SAT','SUN'],null,{stereotype:'enumeration'}),
+      syntax:'«enumeration» DayOfWeek { MON, TUE, WED, THU, FRI, SAT, SUN }'},
+    {emoji:'🎧',title:'SubscriptionTier (Spotify)',blurb:'FREE, PREMIUM, FAMILY — Spotify\'s tiers are a real-world enum you interact with every single time you open the app.',
+      diagramHTML: uBox('SubscriptionTier',['FREE','PREMIUM','FAMILY'],null,{stereotype:'enumeration'}),
+      syntax:'«enumeration» SubscriptionTier { FREE, PREMIUM, FAMILY }'},
+    {emoji:'💳',title:'PaymentStatus',blurb:'PENDING, SUCCESS, FAILED, REFUNDED — every payment gateway you\'ve ever used models status exactly like this under the hood.',
+      diagramHTML: uBox('PaymentStatus',['PENDING','SUCCESS','FAILED','REFUNDED'],null,{stereotype:'enumeration'}),
+      syntax:'«enumeration» PaymentStatus { PENDING, SUCCESS, FAILED, REFUNDED }'},
+    {emoji:'🎬',title:'MovieRating',blurb:'G, PG, PG-13, R — a movie can never be "kinda R", it\'s exactly one rating from this fixed list, enforced by every streaming platform\'s content system.',
+      diagramHTML: uBox('MovieRating',['G','PG','PG_13','R'],null,{stereotype:'enumeration'}),
+      syntax:'«enumeration» MovieRating { G, PG, PG_13, R }'},
+    {emoji:'🧭',title:'Direction',blurb:'A classic — a compass or a game character can only ever face one of four (or eight) fixed directions. No "sort of northeast-ish" allowed.',
+      diagramHTML: uBox('Direction',['NORTH','SOUTH','EAST','WEST'],null,{stereotype:'enumeration'}),
+      syntax:'«enumeration» Direction { NORTH, SOUTH, EAST, WEST }'},
+    {emoji:'🏅',title:'MembershipTier',blurb:'BRONZE, SILVER, GOLD, PLATINUM — every loyalty program you\'ve ever signed up for models your status exactly this way under the hood.',
+      diagramHTML: uBox('MembershipTier',['BRONZE','SILVER','GOLD','PLATINUM'],null,{stereotype:'enumeration'}),
+      syntax:'«enumeration» MembershipTier { BRONZE, SILVER, GOLD, PLATINUM }'}
+  ],
+  remember:'"SHIPED" is a typo. An enum makes that typo literally impossible to write into your system.',
+  quiz:[
+    {q:'Why not just use a plain text field for OrderStatus?',options:['Text fields are always technically wrong','Because "Shiped" (typo) becomes possible — an enum makes invalid values impossible','Enums are simply faster to type','Text fields cost more memory'],correct:1,
+      explain:'🎯 Correct pick: B. The enum doesn\'t just look neater — it makes typo-values physically impossible to store. Structure enforcing correctness beats hoping nobody typos.'},
+    {q:'How is an enumeration drawn in a UML class diagram?',options:['A box stereotyped «enumeration» listing the allowed values','A diamond shape','A dashed line','A hollow triangle'],correct:0,
+      explain:'🎯 Correct pick: A. That «enumeration» stereotype is the giveaway — it turns a normal-looking box into a fixed, closed menu of values.'},
+    {q:'Spotify\'s tiers FREE, PREMIUM, FAMILY — what UML pattern is this?',options:['Association class','Enumeration','Composition','Qualifier'],correct:1,
+      explain:'🎯 Correct pick: B. A small, fixed, named set of options — that\'s an enum textbook example, and you interact with it every time you open the app.'},
+    {q:'Can OrderStatus ever legitimately be something outside its listed values, like "MAYBE"?',options:['Yes, if you\'re feeling creative','No — nothing outside the list is valid, the type system enforces it','Only in test environments','Yes, always'],correct:1,
+      explain:'🎯 Correct pick: B. That\'s the entire point of an enum — the type system itself blocks anything not on the approved list, no exceptions.'}
+  ]
+});
+
+/* ---------- 11: ADVANCED MODELING CONCEPTS ---------- */
+SLIDES.push({id:'advanced', accent:PALETTE[1], kicker:'Part 6 · Finishing Tools', title:'Metadata, Constraints, Derived Data & Packages 🏷️',
+  tagline:'The tools that keep a big model precise, honest, and organized — instead of a spaghetti mess by week 12.',
+  definition:'<strong>Metadata</strong> = data ABOUT data. <strong>Constraint</strong> = a rule in { } that structure alone can\'t express. <strong>Derived (/attr)</strong> = computed on demand, never stored, never out of sync. <strong>Package</strong> = a folder for related classes.',
+  syntaxLines:['{ constraintExpression }        → rule near the relevant part of the diagram','/derivedAttribute                → leading slash = computed, not stored','packageName.ClassName            → billing.Invoice ≠ shipping.Invoice'],
+  examples:[
+    {emoji:'🖼️',title:'Post + PostMetadata',blurb:'Every photo post carries metadata (upload time, location, dimensions) completely separate from the actual pixels. Metadata describes the data, it isn\'t the data.',
+      diagramHTML: twoBoxRel({left:uBox('Post',['pixels'],null),right:uBox('PostMetadata',['uploadTime','locationTag','dimensions'],null),label:'has'}),
+      syntax:'Post ──has▸── PostMetadata'},
+    {emoji:'🧮',title:'Order./totalAmount',blurb:'/totalAmount is DERIVED by summing OrderLines (price × quantity) — never manually typed in, so it can never silently go out of sync.',
+      diagramHTML: uBox('Order',['/totalAmount'],null),
+      syntax:'/totalAmount = Σ (OrderLine.price × OrderLine.quantity)'},
+    {emoji:'📏',title:'Booking constraint',blurb:'{ endDate > startDate } — a rule no simple multiplicity number could ever express. Constraints fill exactly this gap, written in curly braces near the diagram.',
+      diagramHTML: `<div style="display:flex;flex-direction:column;align-items:center;gap:10px;">${uBox('Booking',['startDate','endDate'],null)}<div class="syntax-chip" style="margin:0;"><code>{ endDate &gt; startDate }</code></div></div>`,
+      syntax:'{ a DeliveryPartner cannot be assigned two overlapping Orders }'},
+    {emoji:'🗂️',title:'Package structure — with classes inside',blurb:'A large food-delivery app splits into delivery, ordering, payments packages — each one a folder holding its own related classes. Dashed arrows show "depends on"; too many crossing arrows between packages is a warning sign your design needs rethinking.',
+      diagramHTML: `<div class="pkg-row">${pkgBox('delivery',['DeliveryPartner','Assignment','Route'])}<div class="pkg-arrow"><span>depends on</span><div class="pkg-arrow-line"></div></div>${pkgBox('ordering',['Order','OrderLine','Cart'])}<div class="pkg-arrow"><span>depends on</span><div class="pkg-arrow-line"></div></div>${pkgBox('payments',['PaymentMethod','Transaction','Invoice'])}</div>`,
+      syntax:'delivery ┄┄▸ ordering ┄┄▸ payments   ·   ordering.Order ≠ payments.Invoice (no name clash)'},
+    {emoji:'🎂',title:'Person./age (derived, again — but for real this time)',blurb:'/age is computed fresh from dateOfBirth every time someone asks. No birthday cron job needed to "update" your age — it\'s never stored, so it\'s never stale.',
+      diagramHTML: uBox('Person',['dateOfBirth','/age'],null),
+      syntax:'/age = today.year − dateOfBirth.year   (recomputed on demand)'},
+    {emoji:'🗳️',title:'Voter constraint',blurb:'{ age ≥ 18 } — a rule about eligibility that has nothing to do with structure or multiplicity. Constraints are how you smuggle real-world business rules into a class diagram.',
+      diagramHTML: `<div style="display:flex;flex-direction:column;align-items:center;gap:10px;">${uBox('Voter',['age','voterId'],null)}<div class="syntax-chip" style="margin:0;"><code>{ age ≥ 18 }</code></div></div>`,
+      syntax:'{ a Voter must satisfy age ≥ 18 }'},
+    {emoji:'🎞️',title:'VideoFile metadata',blurb:'duration, resolution, and codec describe the video without BEING the video itself — swap in a differently-encoded file and the metadata updates, the content\'s meaning stays the same.',
+      diagramHTML: twoBoxRel({left:uBox('VideoFile',['rawBytes'],null),right:uBox('VideoMetadata',['duration','resolution','codec'],null),label:'has'}),
+      syntax:'VideoFile ──has▾── VideoMetadata'},
+    {emoji:'📅',title:'Employee./yearsOfService (derived)',blurb:'Nobody manually updates "yearsOfService" every year — it\'s derived from joinDate on every request, so it\'s automatically correct forever, birthday-cake-free.',
+      diagramHTML: uBox('Employee',['joinDate','/yearsOfService'],null),
+      syntax:'/yearsOfService = today.year − joinDate.year'}
+  ],
+  remember:"If two attributes can ever CONTRADICT each other (like age and dateOfBirth), one of them probably shouldn't be stored — it should be derived.",
+  quiz:[
+    {q:'Should you STORE both "age" and "dateOfBirth", or just derive one?',options:['Store both, always','Derive age FROM dateOfBirth (mark it /age) — never store both','Store neither, ever','It genuinely doesn\'t matter'],correct:1,
+      explain:'🎯 Correct pick: B. Two stored values that can silently contradict each other is a bug waiting to happen — derive the one that\'s computable, always.'},
+    {q:'"{ endDate > startDate }" written near a diagram is a:',options:['A multiplicity','A constraint — a rule structure alone can\'t express','A role name','A stereotype'],correct:1,
+      explain:'🎯 Correct pick: B. Boxes and lines can\'t say "this date must come after that date" — that\'s exactly what curly-brace constraints are for.'},
+    {q:'A photo\'s EXIF data (upload time, location, dimensions) describing the photo itself is called:',options:['Metadata — data about data','An enumeration','A qualifier','Polymorphism'],correct:0,
+      explain:'🎯 Correct pick: A. It describes the photo without BEING the photo — that\'s the definition of metadata in one sentence.'},
+    {q:'billing.Invoice and shipping.Invoice can both exist without name-clashing thanks to:',options:['Inheritance','Packages — folders that group related classes and prevent name clashes','Composition','Qualifiers'],correct:1,
+      explain:'🎯 Correct pick: B. Packages are basically namespaces — same class name, different folder, zero conflict.'}
+  ]
+});
+
+/* ---------- 12: CASE STUDY ---------- */
+SLIDES.push({id:'case-study', accent:PALETTE[2], kicker:'Bringing It All Together', title:'One App, Every Concept: Food Delivery 🛵🍕',
+  tagline:'Customer, Restaurant, MenuItem, Order, DeliveryPartner — same real app, every notation you just learned, all in one place. Talk through it feature by feature like an exam answer.',
+  definition:null, syntaxLines:null,
+  examples:null,
+  custom: () => `<div class="case-grid reveal">
+    <div class="case-card"><h5>🔢 Association + Multiplicity</h5>${twoBoxRel({left:uBox('Customer',null,null),right:uBox('Order',null,null),label:'places',leftMult:'1',rightMult:'0..*'})}</div>
+    <div class="case-card"><h5>🔢 Restaurant offers MenuItem</h5>${twoBoxRel({left:uBox('Restaurant',null,null),right:uBox('MenuItem',null,null),label:'offers',leftMult:'1',rightMult:'1..*'})}</div>
+    <div class="case-card"><h5>◆ Composition</h5>${twoBoxRel({left:uBox('Order',null,null),right:uBox('OrderLine',null,null),marker:'comp',diamondSide:'left',leftMult:'1',rightMult:'1..*'})}</div>
+    <div class="case-card"><h5>🎓 Association Class</h5>${assocClassDiagram(twoBoxRel({left:uBox('Order',null,null),right:uBox('DeliveryPartner',null,null)}), uBox('Assignment',['assignedAt','deliveryRating'],null))}</div>
+    <div class="case-card"><h5>🧬 Generalization</h5>${inheritDiagram(uBox('PaymentMethod',null,['processPayment()']),[uBox('UPI',null,null),uBox('Card',null,null),uBox('Wallet',null,null)])}</div>
+    <div class="case-card"><h5>🚦 Enumeration</h5>${uBox('OrderStatus',['PLACED','PREPARING','OUT_FOR_DELIVERY','DELIVERED','CANCELLED'],null,{stereotype:'enumeration'})}</div>
+  </div>
+  <div class="remember-box reveal" style="margin-top:30px;">💬 This Class Model pairs with a <strong>State Model</strong> (the Order's PLACED → DELIVERED journey) and an <strong>Interaction Model</strong> (the messages that move it forward). Three views, one system.</div>`
+});
+
+/* ---------- 13: CHEATSHEET ---------- */
+SLIDES.push({id:'cheatsheet', accent:PALETTE[3], kicker:'Summary', title:'The Whole Unit, One Screen 📋',
+  tagline:"Every notation from this unit, distilled. Screenshot this before your exam.",
+  definition:null, syntaxLines:null, examples:null,
+  custom: () => `<div class="cheat-grid reveal">
+    ${[
+      ['🔷','Object','Identity + state + behavior, one specific thing'],
+      ['📦','Class','Blueprint: attributes + operations'],
+      ['🔗','Link / Association','Object-level / class-level connection'],
+      ['🔢','Multiplicity','1, 0..1, 0..*, 1..*, or exact numbers'],
+      ['👔','Role Name','What an object IS to the other end'],
+      ['🗂️','Qualified Assoc.','A key narrows many → one'],
+      ['🎓','Association Class','Data that belongs to the LINK'],
+      ['🧬','Generalization','"is-a", hollow triangle △'],
+      ['🚦','Enumeration','Fixed set of named values'],
+      ['◇','Aggregation','"has-a", part survives'],
+      ['◆','Composition','"has-a", part dies with whole'],
+      ['🔺','Abstract Class','Never instantiated, italic name'],
+      ['◈','Multiple Inheritance','2+ parents — watch the diamond problem'],
+      ['📏','Constraint','Rule in { } beyond plain structure'],
+      ['🧮','Derived Data','Computed on demand, marked with /'],
+      ['🗂️','Package','Folder for related classes']
+    ].map(([sym,title,txt])=>`<div class="cheat-card"><div class="csym">${sym}</div><h5>${title}</h5><p>${txt}</p></div>`).join('')}
+  </div>`
+});
+
+/* ---------- PRACTICE PROBLEMS ---------- */
+SLIDES.push({id:'practice-problems', accent:PALETTE[0], kicker:'Prove It', title:'10 Real-World Problems 🧩',
+  tagline:"Ten systems you've actually used. Read the scenario, sketch your OWN class diagram on paper first — THEN click to reveal a full solution using every notation from this unit.",
+  definition:null, syntaxLines:null, examples:null,
+  custom: () => {
+    const problems = [
+      {emoji:'🎓',title:'University Course Registration',scenario:'Students enroll in Courses each semester and earn a grade. Courses are offered by Departments. The system distinguishes UndergradStudent from GradStudent.',
+        blocks:[
+          {label:'Association Class + Multiplicity',html: assocClassDiagram(twoBoxRel({left:uBox('Student',null,null),right:uBox('Course',null,null),leftMult:'0..*',rightMult:'0..*',label:'enrolls in'}), uBox('Enrollment',['grade','semester'],null))},
+          {label:'Generalization',html: inheritDiagram(uBox('Student',['studentId'],null), [uBox('UndergradStudent',null,null),uBox('GradStudent',null,null)])},
+          {label:'Aggregation',html: twoBoxRel({left:uBox('Department',null,null),right:uBox('Course',null,null),marker:'agg',diamondSide:'left',leftMult:'1',rightMult:'1..*',label:'offers'})}
+        ]},
+      {emoji:'🎬',title:'Movie Ticket Booking',scenario:'Customers book seats for a Movie showtime. Each booking records a price and timestamp. Payment can happen via UPI, Card, or Wallet.',
+        blocks:[
+          {label:'Association Class',html: assocClassDiagram(twoBoxRel({left:uBox('Movie',null,null),right:uBox('Seat',null,null)}), uBox('Booking',['price','bookingTime'],null))},
+          {label:'Association + Multiplicity',html: twoBoxRel({left:uBox('Customer',null,null),right:uBox('Booking',null,null),leftMult:'1',rightMult:'0..*',label:'makes'})},
+          {label:'Generalization',html: inheritDiagram(uBox('PaymentMethod',null,['pay()']), [uBox('UPIPayment',null,null),uBox('CardPayment',null,null),uBox('WalletPayment',null,null)])}
+        ]},
+      {emoji:'🏥',title:'Hospital Management',scenario:'Doctors treat Patients through Appointments. Appointments have a status. Doctors specialize into Surgeon or GeneralPhysician.',
+        blocks:[
+          {label:'Association + Multiplicity',html: twoBoxRel({left:uBox('Doctor',null,null),right:uBox('Patient',null,null),leftMult:'1',rightMult:'0..*',label:'treats'})},
+          {label:'Composition',html: twoBoxRel({left:uBox('Patient',null,null),right:uBox('Appointment',null,null),marker:'comp',diamondSide:'left',leftMult:'1',rightMult:'0..*'})},
+          {label:'Generalization',html: inheritDiagram(uBox('Doctor',['licenseId'],null), [uBox('Surgeon',null,null),uBox('GeneralPhysician',null,null)])},
+          {label:'Enumeration',html: uBox('AppointmentStatus',['SCHEDULED','COMPLETED','CANCELLED'],null,{stereotype:'enumeration'})}
+        ]},
+      {emoji:'🏦',title:'Online Banking',scenario:'Given an accountNumber, the Bank finds exactly one Account. Accounts specialize into Savings or Current, and each Account owns its own Transactions.',
+        blocks:[
+          {label:'Qualified Association',html: qualifierRel({left:uBox('Bank',null,null),right:uBox('Account',null,null),qualifier:'accountNumber',leftMult:'1'})},
+          {label:'Generalization',html: inheritDiagram(uBox('Account',['balance'],['withdraw()']), [uBox('SavingsAccount',null,null),uBox('CurrentAccount',null,null)])},
+          {label:'Composition + Enumeration',html: `<div style="display:flex;gap:34px;flex-wrap:wrap;justify-content:center;align-items:flex-start;">${twoBoxRel({left:uBox('Account',null,null),right:uBox('Transaction',null,null),marker:'comp',diamondSide:'left',leftMult:'1',rightMult:'0..*'})}${uBox('AccountStatus',['ACTIVE','FROZEN','CLOSED'],null,{stereotype:'enumeration'})}</div>`}
+        ]},
+      {emoji:'📦',title:'E-commerce Orders',scenario:'A Customer places an Order made of OrderLines. Each Order is assigned to a DeliveryPartner with an assignedAt time. Orders move through a fixed status lifecycle.',
+        blocks:[
+          {label:'Association + Multiplicity',html: twoBoxRel({left:uBox('Customer',null,null),right:uBox('Order',null,null),leftMult:'1',rightMult:'0..*',label:'places'})},
+          {label:'Composition',html: twoBoxRel({left:uBox('Order',null,null),right:uBox('OrderLine',null,null),marker:'comp',diamondSide:'left',leftMult:'1',rightMult:'1..*'})},
+          {label:'Association Class',html: assocClassDiagram(twoBoxRel({left:uBox('Order',null,null),right:uBox('DeliveryPartner',null,null)}), uBox('Assignment',['assignedAt'],null))},
+          {label:'Enumeration',html: uBox('OrderStatus',['PLACED','SHIPPED','DELIVERED','CANCELLED'],null,{stereotype:'enumeration'})}
+        ]},
+      {emoji:'🎵',title:'Music Streaming App',scenario:'A User builds Playlists containing many Songs (songs can live in multiple playlists too). Users can follow other Users. Subscriptions come in fixed tiers.',
+        blocks:[
+          {label:'Composition + Aggregation',html: `<div style="display:flex;gap:34px;flex-wrap:wrap;justify-content:center;">${twoBoxRel({left:uBox('User',null,null),right:uBox('Playlist',null,null),marker:'comp',diamondSide:'left',leftMult:'1',rightMult:'0..*'})}${twoBoxRel({left:uBox('Playlist',null,null),right:uBox('Song',null,null),marker:'agg',diamondSide:'left',leftMult:'1',rightMult:'0..*'})}</div>`},
+          {label:'Self-Association',html: selfAssocDiagram(uBox('User',null,null),'follows','follower','followed')},
+          {label:'Enumeration',html: uBox('SubscriptionTier',['FREE','PREMIUM','FAMILY'],null,{stereotype:'enumeration'})}
+        ]},
+      {emoji:'🚗',title:'Ride-Hailing App',scenario:'A Rider requests a Ride, which is assigned to a Driver with a pickupTime and fare. Vehicles specialize into Bike, Auto, or Car. Rides move through a fixed status lifecycle.',
+        blocks:[
+          {label:'Association + Multiplicity',html: twoBoxRel({left:uBox('Rider',null,null),right:uBox('Ride',null,null),leftMult:'1',rightMult:'0..*',label:'requests'})},
+          {label:'Association Class',html: assocClassDiagram(twoBoxRel({left:uBox('Ride',null,null),right:uBox('Driver',null,null)}), uBox('Assignment',['pickupTime','fare'],null))},
+          {label:'Generalization',html: inheritDiagram(uBox('Vehicle',['plateNumber'],null), [uBox('Bike',null,null),uBox('Auto',null,null),uBox('Car',null,null)])},
+          {label:'Enumeration',html: uBox('RideStatus',['REQUESTED','ACCEPTED','ONGOING','COMPLETED'],null,{stereotype:'enumeration'})}
+        ]},
+      {emoji:'🏨',title:'Hotel Reservation',scenario:'A Guest reserves a Room with a checkIn/checkOut date. Given a roomNumber, the Hotel finds exactly one Room. Rooms belong to exactly one Hotel and come in fixed types.',
+        blocks:[
+          {label:'Association Class',html: assocClassDiagram(twoBoxRel({left:uBox('Guest',null,null),right:uBox('Room',null,null)}), uBox('Reservation',['checkIn','checkOut'],null))},
+          {label:'Qualified Association',html: qualifierRel({left:uBox('Hotel',null,null),right:uBox('Room',null,null),qualifier:'roomNumber',leftMult:'1'})},
+          {label:'Composition + Enumeration',html: `<div style="display:flex;gap:34px;flex-wrap:wrap;justify-content:center;align-items:flex-start;">${twoBoxRel({left:uBox('Hotel',null,null),right:uBox('Room',null,null),marker:'comp',diamondSide:'left',leftMult:'1',rightMult:'1..*'})}${uBox('RoomType',['SINGLE','DOUBLE','SUITE','DELUXE'],null,{stereotype:'enumeration'})}</div>`}
+        ]},
+      {emoji:'📚',title:'Library Management',scenario:'A Member borrows a Book, tracked as a Loan with borrowDate and dueDate. Given a membershipId, the Library finds exactly one Member. The Library owns its BookCopy inventory.',
+        blocks:[
+          {label:'Association Class',html: assocClassDiagram(twoBoxRel({left:uBox('Member',null,null),right:uBox('Book',null,null)}), uBox('Loan',['borrowDate','dueDate'],null))},
+          {label:'Qualified Association',html: qualifierRel({left:uBox('Library',null,null),right:uBox('Member',null,null),qualifier:'membershipId',leftMult:'1'})},
+          {label:'Composition',html: twoBoxRel({left:uBox('Library',null,null),right:uBox('BookCopy',null,null),marker:'comp',diamondSide:'left',leftMult:'1',rightMult:'0..*'})}
+        ]},
+      {emoji:'🎮',title:'Online Multiplayer Game',scenario:'Players join a GameSession and end up with a score and rank for that session. Characters specialize into Warrior, Mage, or Archer. Each Player owns one Inventory holding tradeable Items.',
+        blocks:[
+          {label:'Association Class + Multiplicity',html: assocClassDiagram(twoBoxRel({left:uBox('Player',null,null),right:uBox('GameSession',null,null),leftMult:'0..*',rightMult:'1'}), uBox('MatchResult',['score','rank'],null))},
+          {label:'Generalization',html: inheritDiagram(uBox('Character',['hp','level'],null), [uBox('Warrior',null,null),uBox('Mage',null,null),uBox('Archer',null,null)])},
+          {label:'Composition + Aggregation',html: `<div style="display:flex;gap:34px;flex-wrap:wrap;justify-content:center;">${twoBoxRel({left:uBox('Player',null,null),right:uBox('Inventory',null,null),marker:'comp',diamondSide:'left',leftMult:'1',rightMult:'1'})}${twoBoxRel({left:uBox('Inventory',null,null),right:uBox('Item',null,null),marker:'agg',diamondSide:'left',leftMult:'1',rightMult:'0..*'})}</div>`}
+        ]}
+    ];
+    return `<div class="problem-grid reveal">${problems.map((p,i)=>problemCard(i+1,p)).join('')}</div>`;
+  }
+});
+
+
+SLIDES.push({id:'outro', accent:PALETTE[4], kicker:"That's a wrap", title:'Thank You! 🎉',
+  tagline:'You can now look at literally any app on your phone and start sketching its class diagram in your head. Go touch some grass, then go draw some boxes.',
+  definition:null, syntaxLines:null, examples:null,
+  custom: () => `
+  <h3 class="reveal" style="margin-top:10px;font-size:1.3rem;">🧪 Test yourself</h3>
+  <div class="practice-grid reveal">
+    ${[
+      ['1','Model a Library system','Draw classes for Book, Member, and Loan. Where does \'dueDate\' belong? Is Loan an association class?'],
+      ['2','Aggregation or composition?','A Playlist and its Songs. A Car and its Wheels. A University and its Departments. Justify each answer.'],
+      ['3','Spot the diamond problem','Design a hierarchy where a person can be both a Student and a TeachingAssistant. How do you avoid it?'],
+      ['4','Derive it or store it?','For an e-commerce Order — should totalAmount, itemCount, estimatedDeliveryDate be stored or derived? Why?'],
+      ['5','Design a package structure','For a hospital system, propose 4–5 packages and explain which ones depend on which.']
+    ].map(([n,t,d])=>`<div class="practice-card"><div class="pnum">${n}</div><h4 style="font-size:1rem;margin:6px 0;">${t}</h4><p style="font-size:.85rem;color:var(--dim);margin:0;">${d}</p></div>`).join('')}
+  </div>
+  <div class="refs reveal">
+    <strong>References &amp; Further Reading</strong><br>
+    Booch, <em>Object-Oriented Analysis and Design with Applications</em> (3rd Ed.)<br>
+    Rumbaugh, Blaha, et al., <em>Object-Oriented Modeling and Design</em> (OMT)<br>
+    OMG Unified Modeling Language (UML) Specification
+  </div>
+  <div class="credit reveal">Prepared &amp; Taught by Prof. Bhumika · Object-Oriented Paradigm &amp; Class Modeling · Sarvajanik College of Engineering &amp; Technology</div>`
+});
+
+/* ============================================================
+   BUILD DOM
+   ============================================================ */
+const deck = document.getElementById('deck');
+const dotnav = document.getElementById('dotnav');
+const storybar = document.getElementById('storybar');
+let current = 0;
+
+SLIDES.forEach((s,i)=>{
+  const wrap = document.createElement('div');
+  wrap.className = 'slide' + (s.extraClass ? ' '+s.extraClass : '');
+  wrap.id = 'slide-'+i;
+  wrap.style.setProperty('--accent', s.accent);
+
+  if(s.render){
+    wrap.innerHTML = s.render(s);
+  } else {
+    let body = '';
+    if(s.custom){
+      body = s.custom();
+    } else {
+      body = `
+      <div class="kicker reveal">${s.kicker||''}</div>
+      <h2 class="slide-title reveal">${s.title||''}</h2>
+      <p class="slide-tagline reveal">${s.tagline||''}</p>
+      ${s.definition?`<div class="definition-box reveal">${s.definition}</div>`:''}
+      ${s.syntaxLines?`<div class="syntax-block reveal"><div class="syntax-block-label">📝 Syntax you'll actually see</div>${s.syntaxLines.map(l=>`<code>${l}</code>`).join('')}</div>`:''}
+      ${s.examples?`<div class="examples-grid">${s.examples.map((e,idx)=>exampleCard(e,idx)).join('')}</div>`:''}
+      ${s.remember?`<div class="remember-box reveal">💡 <strong>Remember this:</strong> ${s.remember}</div>`:''}
+      ${renderQuizSection(s.quiz)}
+      `;
+    }
+    wrap.innerHTML = `<div class="slide-inner">${body}</div>`;
+  }
+  deck.appendChild(wrap);
+
+  // dot nav
+  const dot = document.createElement('div');
+  dot.className = 'dot';
+  dot.dataset.i = i;
+  dot.innerHTML = `<span class="tip">${s.title || (s.id==='cover'?'Start':s.id==='story'?'The Big Idea':s.id==='outro'?'Thank You':s.id)}</span>`;
+  dot.onclick = ()=>goTo(i);
+  dotnav.appendChild(dot);
+
+  // story bar
+  const seg = document.createElement('div');
+  seg.className='seg';
+  seg.dataset.i = i;
+  seg.innerHTML = `<div class="fill"></div>`;
+  seg.onclick = ()=>goTo(i);
+  storybar.appendChild(seg);
+});
+
+function goTo(i){
+  if(i<0||i>=SLIDES.length) return;
+  current = i;
+  deck.style.transform = `translateX(-${i*100}vw)`;
+  document.querySelectorAll('.slide').forEach((el,idx)=>{
+    el.classList.toggle('active', idx===i);
+    if(idx===i) el.scrollTop = 0;
+  });
+  document.querySelectorAll('.dot').forEach((d,idx)=>d.classList.toggle('active', idx===i));
+  document.querySelectorAll('.seg').forEach((seg,idx)=>{
+    seg.classList.toggle('done', idx<i);
+    seg.classList.toggle('current', idx===i);
+  });
+  document.getElementById('counter').textContent = `${i+1} / ${SLIDES.length}`;
+  document.getElementById('prevBtn').disabled = i===0;
+  document.getElementById('nextBtn').disabled = i===SLIDES.length-1;
+  const sd = SLIDES[i];
+  if(sd.after){ setTimeout(sd.after, 60); }
+}
+
+document.getElementById('prevBtn').onclick = ()=>goTo(current-1);
+document.getElementById('nextBtn').onclick = ()=>goTo(current+1);
+window.addEventListener('keydown', e=>{
+  if(e.key==='ArrowRight') goTo(current+1);
+  if(e.key==='ArrowLeft') goTo(current-1);
+});
+let touchX=null;
+document.body.addEventListener('touchstart', e=>{touchX=e.touches[0].clientX;});
+document.body.addEventListener('touchend', e=>{
+  if(touchX===null) return;
+  const dx = e.changedTouches[0].clientX - touchX;
+  if(Math.abs(dx)>60){ dx<0 ? goTo(current+1) : goTo(current-1); }
+  touchX=null;
+});
+
+goTo(0);
+</script>
+</body>
+</html>
 
