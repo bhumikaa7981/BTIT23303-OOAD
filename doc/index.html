@@ -1,1 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Object-Oriented Analysis & Design · BTIT23303</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Poppins:wght@300;400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --coral:#FF6B6B;
+    --coral-deep:#E8483F;
+    --yellow:#FFD23F;
+    --yellow-deep:#E6A400;
+    --mint:#06D6A0;
+    --mint-deep:#049C74;
+    --sky:#4CC9F0;
+    --sky-deep:#1B9AAA;
+    --grape:#8338EC;
+    --grape-deep:#5F1FB8;
+    --pink:#FF6FB5;
+    --pink-deep:#E14E96;
+    --ink:#231F3D;
+    --ink-2:#3A3358;
+    --muted:#75708F;
+    --paper:#FFFDF8;
+    --card:#FFFFFF;
+    --line:rgba(35,31,61,0.08);
+    --display:'Baloo 2', sans-serif;
+    --body:'Poppins', sans-serif;
+    --mono:'Space Mono', monospace;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:var(--body);
+    line-height:1.6;
+    overflow-x:hidden;
+  }
+  a{color:inherit; text-decoration:none;}
+  .wrap{max-width:1100px; margin:0 auto; padding:0 24px; position:relative; z-index:2;}
+  ::selection{ background:var(--yellow); color:var(--ink);}
+  a:focus-visible, button:focus-visible{ outline:2px solid var(--grape); outline-offset:3px; border-radius:6px;}
+  @media(prefers-reduced-motion: reduce){
+    *{animation-duration:0.001ms !important; transition-duration:0.001ms !important;}
+  }
+  img{ max-width:100%; display:block; }
 
+  /* ---------- floating OOP doodads ---------- */
+  .float-layer{ position:absolute; inset:0; overflow:hidden; pointer-events:none; z-index:1; }
+  .float-badge{
+    position:absolute; font-family:var(--mono); font-weight:700; font-size:13px;
+    padding:8px 14px; border-radius:100px; white-space:nowrap; box-shadow:0 6px 16px -6px rgba(35,31,61,0.25);
+    animation:bob var(--dur,6s) ease-in-out infinite; animation-delay:var(--delay,0s);
+    transform:rotate(var(--rot,0deg));
+  }
+  @keyframes bob{
+    0%,100%{ transform:translateY(0) rotate(var(--rot,0deg)); }
+    50%{ transform:translateY(-16px) rotate(var(--rot,0deg)); }
+  }
+  .fb-coral{ background:var(--coral); color:#fff; }
+  .fb-yellow{ background:var(--yellow); color:var(--ink); }
+  .fb-mint{ background:var(--mint); color:#fff; }
+  .fb-sky{ background:var(--sky); color:#08313a; }
+  .fb-grape{ background:var(--grape); color:#fff; }
+  .fb-pink{ background:var(--pink); color:#fff; }
+  .fb-outline{ background:#fff; color:var(--ink); border:2px solid var(--ink); }
+
+  /* ---------- NAV ---------- */
+  .nav{
+    position:sticky; top:0; z-index:80; backdrop-filter:blur(10px);
+    background:rgba(255,253,248,0.85); border-bottom:2px solid var(--ink);
+  }
+  .nav-inner{ display:flex; align-items:center; justify-content:space-between; padding:14px 24px; max-width:1100px; margin:0 auto;}
+  .brand{ font-family:var(--display); font-weight:700; font-size:17px; letter-spacing:.01em; display:flex; align-items:center; gap:8px;}
+  .brand .dot{ width:12px; height:12px; border-radius:4px; background:var(--coral); transform:rotate(15deg); box-shadow:3px 3px 0 var(--ink);}
+  .navlinks{ display:flex; gap:26px; font-size:14px; font-weight:600;}
+  .navlinks a{ color:var(--ink-2); transition:color .2s ease; position:relative;}
+  .navlinks a:hover{ color:var(--coral-deep);}
+  .nav-cta{
+    font-family:var(--display); font-size:13.5px; font-weight:700; padding:10px 18px; border-radius:100px;
+    background:var(--ink); color:#fff; white-space:nowrap; box-shadow:3px 3px 0 var(--coral);
+    transition:transform .15s ease;
+  }
+  .nav-cta:hover{ transform:translate(-2px,-2px); }
+  @media(max-width:760px){ .navlinks{ display:none; } }
+
+  /* ---------- HERO ---------- */
+  .hero{
+    position:relative; padding:80px 0 40px; overflow:hidden;
+    background:
+      radial-gradient(circle at 8% 10%, rgba(255,210,63,.35), transparent 40%),
+      radial-gradient(circle at 92% 0%, rgba(255,111,181,.30), transparent 42%),
+      radial-gradient(circle at 50% 100%, rgba(76,201,240,.25), transparent 45%);
+  }
+  .hero-eyebrow{
+    font-family:var(--mono); font-size:12.5px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--grape-deep);
+    display:inline-flex; align-items:center; gap:8px; margin-bottom:18px; background:#fff; padding:7px 14px; border-radius:100px;
+    border:2px solid var(--ink); box-shadow:3px 3px 0 var(--ink);
+  }
+  .hero h1{
+    font-family:var(--display); font-weight:800; font-size:clamp(34px,6vw,60px); line-height:1.08; letter-spacing:-0.01em; color:var(--ink);
+  }
+  .hero h1 .hl{
+    background:linear-gradient(100deg, var(--coral), var(--pink) 45%, var(--grape));
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+  .hero .sub{ font-family:var(--body); font-weight:500; font-size:clamp(16px,2vw,19px); color:var(--ink-2); margin-top:18px; max-width:600px;}
+  .hero-cta-row{ display:flex; flex-wrap:wrap; gap:14px; margin-top:30px; }
+  .btn{
+    font-family:var(--display); font-weight:700; font-size:15px; padding:14px 26px; border-radius:100px;
+    display:inline-flex; align-items:center; gap:8px; border:2px solid var(--ink); transition:transform .15s ease, box-shadow .15s ease;
+  }
+  .btn-primary{ background:var(--coral); color:#fff; box-shadow:4px 4px 0 var(--ink); }
+  .btn-primary:hover{ transform:translate(-2px,-2px); box-shadow:6px 6px 0 var(--ink); }
+  .btn-ghost{ background:#fff; color:var(--ink); box-shadow:4px 4px 0 var(--grape); }
+  .btn-ghost:hover{ transform:translate(-2px,-2px); box-shadow:6px 6px 0 var(--grape); }
+  .hero-stage{ position:relative; height:120px; margin-top:10px; }
+
+  /* ---------- MARQUEE ---------- */
+  .marquee-band{ background:var(--ink); overflow:hidden; padding:14px 0; border-top:2px solid var(--ink); border-bottom:2px solid var(--ink); }
+  .marquee-track{ display:flex; width:max-content; animation:scroll 26s linear infinite; }
+  .marquee-track span{
+    font-family:var(--mono); font-weight:700; font-size:15px; color:#fff; padding:0 26px; white-space:nowrap; display:flex; align-items:center; gap:10px;
+  }
+  .marquee-track span.hi{ color:var(--yellow); }
+  @keyframes scroll{ from{ transform:translateX(0); } to{ transform:translateX(-50%); } }
+
+  /* ---------- SECTION SHARED ---------- */
+  section{ padding:64px 0; position:relative;}
+  .sec-head{ max-width:680px; margin-bottom:34px;}
+  .eyebrow{
+    font-family:var(--mono); font-size:12px; font-weight:700; letter-spacing:.05em; text-transform:uppercase; color:var(--pink-deep); margin-bottom:10px;
+    display:inline-block;
+  }
+  .sec-head h2{ font-family:var(--display); font-weight:700; font-size:clamp(26px,3.6vw,36px); line-height:1.15; color:var(--ink);}
+  .sec-head p{ color:var(--muted); font-size:15.5px; margin-top:10px;}
+
+  /* ---------- WELCOME ---------- */
+  #welcome{ background:#fff; border-top:2px solid var(--ink); border-bottom:2px solid var(--ink); }
+  #welcome .body-text{ max-width:680px; font-size:16.5px; color:var(--ink-2); }
+  #welcome .body-text p{ margin-bottom:16px; }
+  #welcome .body-text strong{ background:var(--yellow); padding:1px 6px; border-radius:5px; }
+  .fact-row{ display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:14px; margin-top:30px; }
+  .fact-card{
+    background:var(--card); border:2px solid var(--ink); border-radius:16px; padding:18px; box-shadow:5px 5px 0 var(--ink);
+    font-size:14px; color:var(--ink-2);
+  }
+  .fact-card .emoji{ font-size:26px; margin-bottom:8px; display:block; }
+  .fact-card b{ display:block; font-family:var(--display); font-size:15.5px; color:var(--ink); margin-bottom:4px; }
+
+  /* ---------- PROFESSOR ---------- */
+  #professor{ position:relative; overflow:hidden; }
+  .prof{ display:grid; grid-template-columns:260px 1fr; gap:46px; align-items:start;}
+  @media(max-width:720px){ .prof{ grid-template-columns:1fr; } }
+  .prof-photo-wrap{ position:relative; }
+  .prof-photo{
+    width:230px; height:230px; border-radius:38% 62% 60% 40% / 45% 40% 60% 55%;
+    overflow:hidden; border:4px solid var(--ink); box-shadow:8px 8px 0 var(--coral);
+    animation:blobmorph 9s ease-in-out infinite;
+  }
+  .prof-photo img{ width:100%; height:100%; object-fit:cover; }
+  @keyframes blobmorph{
+    0%,100%{ border-radius:38% 62% 60% 40% / 45% 40% 60% 55%; }
+    50%{ border-radius:60% 40% 42% 58% / 55% 60% 40% 45%; }
+  }
+  .prof-badge{
+    position:absolute; bottom:-14px; right:-10px; background:var(--yellow); border:2px solid var(--ink);
+    border-radius:100px; padding:8px 14px; font-family:var(--display); font-weight:700; font-size:13px;
+    box-shadow:3px 3px 0 var(--ink); transform:rotate(-6deg);
+  }
+  .prof-body h3{ font-family:var(--display); font-size:28px; font-weight:700; color:var(--ink);}
+  .prof-body .role{ font-family:var(--mono); font-size:12.5px; color:var(--muted); margin-top:4px; }
+  .prof-body .bio{ color:var(--ink-2); font-size:16px; margin:18px 0; max-width:600px; }
+  .chips{ display:flex; flex-wrap:wrap; gap:9px; margin:18px 0 22px; }
+  .chip{
+    font-family:var(--mono); font-size:12px; font-weight:700; padding:8px 14px; border-radius:100px; background:#fff;
+    border:2px solid var(--ink); color:var(--ink-2);
+  }
+
+  /* ---------- UNITS ---------- */
+  .units-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:20px;}
+  .unit-card{
+    position:relative; display:block; background:var(--card); border:2px solid var(--ink); border-radius:20px;
+    padding:24px; overflow:hidden; transition:transform .2s ease, box-shadow .2s ease; box-shadow:5px 5px 0 var(--ink);
+  }
+  .unit-card:hover{ transform:translate(-3px,-3px); box-shadow:8px 8px 0 var(--ink); }
+  .unit-card.locked:hover{ transform:none; box-shadow:5px 5px 0 var(--ink); }
+  .unit-top{ display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:14px;}
+  .unit-icon{ font-size:26px; }
+  .unit-status{
+    font-family:var(--mono); font-size:10.5px; text-transform:uppercase; letter-spacing:.05em; padding:5px 10px;
+    border-radius:100px; font-weight:700; border:2px solid var(--ink);
+  }
+  .unit-status.live{ background:var(--mint); color:#fff; }
+  .unit-status.soon{ background:#fff; color:var(--muted); }
+  .unit-n{ font-family:var(--mono); font-size:11px; color:var(--u-accent); font-weight:700; margin-bottom:4px;}
+  .unit-card h3{ font-family:var(--display); font-size:19px; font-weight:700; margin-bottom:6px; color:var(--ink);}
+  .unit-card .tag{ font-size:13.5px; color:var(--muted); margin-bottom:14px;}
+  .unit-topics{ font-family:var(--mono); font-size:11.5px; color:var(--ink-2); line-height:1.9;}
+  .unit-go{ display:inline-flex; align-items:center; gap:6px; margin-top:16px; font-family:var(--display); font-size:13.5px; font-weight:700; color:var(--u-accent);}
+  .unit-links{ display:flex; flex-direction:column; gap:8px; }
+  .unit-go.secondary{ margin-top:0; }
+  .unit-go.secondary::before{ content:'✦'; font-size:11px; }
+
+  /* ---------- BOOKS ---------- */
+  .books-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:18px;}
+  .book-card{
+    background:var(--card); border:2px solid var(--ink); border-radius:16px; padding:20px; box-shadow:4px 4px 0 var(--ink);
+  }
+  .book-card .icon{ font-size:22px; margin-bottom:10px;}
+  .book-card h4{ font-family:var(--display); font-size:15.5px; margin-bottom:4px; color:var(--ink);}
+  .book-card .auth{ font-family:var(--mono); font-size:12px; color:var(--muted);}
+
+  /* ---------- QUOTE ---------- */
+  .big-quote{
+    text-align:center; padding:60px 24px; max-width:760px; margin:0 auto;
+    font-family:var(--display); font-weight:700; font-size:clamp(22px,3.4vw,32px); line-height:1.4; color:var(--ink);
+  }
+  .big-quote span{
+    background:linear-gradient(100deg, var(--coral), var(--grape)); -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+
+  /* ---------- FOOTER ---------- */
+  footer{ border-top:2px solid var(--ink); padding:40px 0 60px; text-align:center; background:#fff;}
+  footer .name{ font-family:var(--display); font-weight:700; font-size:16px; margin-top:6px; color:var(--ink);}
+  footer .role{ font-family:var(--mono); font-size:12px; color:var(--muted); margin-top:4px;}
+  footer .made{ font-family:var(--mono); font-size:11.5px; color:var(--muted); margin-top:16px;}
+  footer .credit-label{ font-family:var(--mono); font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:.06em;}
+
+  .reveal{ opacity:0; transform:translateY(18px); transition:opacity .6s ease, transform .6s ease;}
+  .reveal.in{ opacity:1; transform:none;}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <div class="brand"><span class="dot"></span> BTIT23303 · OOAD</div>
+    <div class="navlinks">
+      <a href="#home">Home</a>
+      <a href="#professor">Professor</a>
+      <a href="#units">Units</a>
+      <a href="#books">Books</a>
+    </div>
+    <a class="nav-cta" href="unit01/">Start Learning →</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section id="home" class="hero">
+  <div class="float-layer">
+    <span class="float-badge fb-coral" style="top:10%; left:4%; --dur:7s; --delay:.2s; --rot:-8deg;">{ }</span>
+    <span class="float-badge fb-yellow" style="top:18%; left:82%; --dur:6.2s; --delay:.6s; --rot:6deg;">class Car</span>
+    <span class="float-badge fb-mint" style="top:52%; left:88%; --dur:7.6s; --delay:0s; --rot:-4deg;">🧬 inherits</span>
+    <span class="float-badge fb-sky" style="top:68%; left:6%; --dur:6.8s; --delay:.9s; --rot:5deg;">new Object()</span>
+    <span class="float-badge fb-pink" style="top:4%; left:44%; --dur:5.6s; --delay:.3s; --rot:-3deg;">🎭 polymorphism</span>
+    <span class="float-badge fb-outline" style="top:36%; left:1%; --dur:8s; --delay:1.1s; --rot:-10deg;">this-&gt;ptr</span>
+    <span class="float-badge fb-grape" style="top:80%; left:38%; --dur:6.4s; --delay:.5s; --rot:4deg;">📦 encapsulation</span>
+  </div>
+  <div class="wrap">
+    <div class="hero-eyebrow">🎓 BTIT23303 · B.Tech Sem 3 · Professional Core</div>
+    <h1>Object-Oriented<br><span class="hl">Analysis & Design</span></h1>
+    <div class="sub">Where messy real-world chaos gets sorted into neat little boxes called <em>objects</em> — then we make them talk to each other in C++. No cap, it's actually kinda fun.</div>
+    <div class="hero-cta-row">
+      <a href="unit01/" class="btn btn-primary">Start Unit 01 →</a>
+      <a href="#professor" class="btn btn-ghost">👋 Meet the Professor</a>
+    </div>
+    <div class="hero-stage"></div>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-band">
+  <div class="marquee-track">
+    <span><span class="hi">CLASS</span> · OBJECT · <span class="hi">INHERITANCE</span> · ENCAPSULATION · <span class="hi">POLYMORPHISM</span> · ABSTRACTION · CONSTRUCTOR · <span class="hi">DESTRUCTOR</span> · FRIEND FUNCTION · OPERATOR OVERLOADING · <span class="hi">VIRTUAL FUNCTION</span> ·</span>
+    <span><span class="hi">CLASS</span> · OBJECT · <span class="hi">INHERITANCE</span> · ENCAPSULATION · <span class="hi">POLYMORPHISM</span> · ABSTRACTION · CONSTRUCTOR · <span class="hi">DESTRUCTOR</span> · FRIEND FUNCTION · OPERATOR OVERLOADING · <span class="hi">VIRTUAL FUNCTION</span> ·</span>
+  </div>
+</div>
+
+<!-- WELCOME -->
+<section id="welcome">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="eyebrow">👀 Before you dive in</div>
+      <h2>Real life is basically OOP and nobody told you.</h2>
+    </div>
+    <div class="body-text reveal">
+      <p>Your phone is an <strong>object</strong>. Your Instagram profile is an <strong>object</strong>. Even your dog is technically an object with attributes (fluffy, loud) and behaviors (barks, begs for food). Object-Oriented Analysis & Design is just the fancy way of teaching software to think the way you already think — in things, not steps.</p>
+      <p>In this course, you'll learn to model those "things" properly (UML diagrams, state models, use cases), then bring them to life in <strong>C++</strong> — classes, constructors, inheritance, virtual functions, the whole glow-up.</p>
+      <p>No prior OOP experience needed. Just bring curiosity — we'll bring the semicolons.</p>
+    </div>
+    <div class="fact-row reveal">
+      <div class="fact-card"><span class="emoji">🚗</span><b>Class = Blueprint</b>Car is a class. Your actual car in the parking lot? That's the object. One plan, infinite instances.</div>
+      <div class="fact-card"><span class="emoji">🧬</span><b>Inheritance = Family Traits</b>SportsCar inherits from Car. Faster, flashier, still has four wheels and a horn.</div>
+      <div class="fact-card"><span class="emoji">🎭</span><b>Polymorphism = Same Move, Different Vibe</b>"speak()" means bark for a Dog, meow for a Cat. One function, many personalities.</div>
+      <div class="fact-card"><span class="emoji">🔒</span><b>Encapsulation = Main Character Privacy</b>Your bank balance is private. Only your own methods get to touch it. As it should be.</div>
+    </div>
+  </div>
+</section>
+
+<!-- PROFESSOR -->
+<section id="professor">
+  <div class="float-layer">
+    <span class="float-badge fb-yellow" style="top:6%; left:88%; --dur:7s; --delay:.4s; --rot:8deg;">virtual</span>
+    <span class="float-badge fb-coral" style="top:82%; left:4%; --dur:6.6s; --delay:.1s; --rot:-6deg;">◆ composition</span>
+    <span class="float-badge fb-sky" style="top:70%; left:90%; --dur:7.4s; --delay:.8s; --rot:5deg;">operator++</span>
+  </div>
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="eyebrow">🙋 Say hi</div>
+      <h2>Meet Your Professor</h2>
+    </div>
+    <div class="prof reveal">
+      <div class="prof-photo-wrap">
+        <div class="prof-photo"><img src="prof-bhumika.jpg" alt="Prof. Bhumika Shah"></div>
+        <div class="prof-badge">Class Enthusiast 🎓</div>
+      </div>
+      <div class="prof-body">
+        <h3>Prof. Bhumika Shah</h3>
+        <div class="role">Assistant Professor · Dept. of Information Technology</div>
+        <div class="bio">20+ years turning "wait, what's a class?" into "ohhh THAT'S a class" for generations of very confused (but very curious) engineers. Ex-bookstore-ops-lead, full-time object enthusiast — and firmly of the opinion that good code, like good chai, is all about structure.</div>
+        <div class="chips">
+          <span class="chip">📚 Reading</span>
+          <span class="chip">✍️ Writing</span>
+          <span class="chip">🎭 Theatre</span>
+          <span class="chip">💡 Building ideas</span>
+          <span class="chip">☕ Debugging life, one cup at a time</span>
+        </div>
+        <a href="https://bhumikaa7981.github.io/meet-bhumika/" class="btn btn-primary" target="_blank" rel="noopener">Get the Full Story →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- UNITS -->
+<section id="units">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="eyebrow">🗺️ Course roadmap · 45 teaching hours</div>
+      <h2>Five units. One glow-up, from chaos to classes.</h2>
+      <p>Hour counts are straight from the syllabus — exactly how much of the semester each idea earns.</p>
+    </div>
+
+    <div class="units-grid reveal">
+
+      <div class="unit-card" style="--u-accent:var(--coral-deep);">
+        <div class="unit-top"><div class="unit-icon">🧩</div><div class="unit-status live">Live now</div></div>
+        <div class="unit-n">Unit 01 · 08 hrs</div>
+        <h3>OO Paradigm & Class Modeling</h3>
+        <div class="tag">Objects, classes, and the relationships that hold them together.</div>
+        <div class="unit-topics">Abstraction · Links & Associations · Generalization & Inheritance · Aggregation & Composition</div>
+        <div class="unit-links">
+          <a href="unit01/" class="unit-go">Explore Unit 1 →</a>
+          <a href="https://bhumikaa7981.github.io/BTIT23303-OOAD/unit01/" class="unit-go secondary" target="_blank" rel="noopener">Learn More →</a>
+        </div>
+      </div>
+
+      <a href="unit2.html" class="unit-card locked" style="--u-accent:var(--sky-deep);">
+        <div class="unit-top"><div class="unit-icon">🔄</div><div class="unit-status soon">Coming soon</div></div>
+        <div class="unit-n">Unit 02 · 07 hrs</div>
+        <h3>State & Interaction Modeling</h3>
+        <div class="tag">Teaching diagrams to show what happens, and when.</div>
+        <div class="unit-topics">State Diagrams · Use Case Models · Sequence & Activity Diagrams</div>
+        <div class="unit-go">Notify me →</div>
+      </a>
+
+      <a href="unit3.html" class="unit-card locked" style="--u-accent:var(--mint-deep);">
+        <div class="unit-top"><div class="unit-icon">💻</div><div class="unit-status soon">Coming soon</div></div>
+        <div class="unit-n">Unit 03 · 12 hrs</div>
+        <h3>C++ Fundamentals: Classes & Objects</h3>
+        <div class="tag">Where the theory finally becomes actual, runnable code.</div>
+        <div class="unit-topics">Member Functions · Static Members · Friend Functions · Pointers to Members</div>
+        <div class="unit-go">Notify me →</div>
+      </a>
+
+      <a href="unit4.html" class="unit-card locked" style="--u-accent:var(--yellow-deep);">
+        <div class="unit-top"><div class="unit-icon">🛠️</div><div class="unit-status soon">Coming soon</div></div>
+        <div class="unit-n">Unit 04 · 08 hrs</div>
+        <h3>Constructors & Operator Overloading</h3>
+        <div class="tag">Giving objects a proper birth, death, and personality.</div>
+        <div class="unit-topics">Copy & Dynamic Constructors · Destructors · Operator Overloading · Type Conversion</div>
+        <div class="unit-go">Notify me →</div>
+      </a>
+
+      <a href="unit5.html" class="unit-card locked" style="--u-accent:var(--grape-deep);">
+        <div class="unit-top"><div class="unit-icon">🦋</div><div class="unit-status soon">Coming soon</div></div>
+        <div class="unit-n">Unit 05 · 10 hrs</div>
+        <h3>Inheritance, Virtual Functions & Polymorphism</h3>
+        <div class="tag">The glow-up finale: reuse, flexibility, runtime magic.</div>
+        <div class="unit-topics">Multiple & Multilevel Inheritance · Virtual Base Class · Virtual Functions</div>
+        <div class="unit-go">Notify me →</div>
+      </a>
+
+    </div>
+  </div>
+</section>
+
+<!-- BOOKS -->
+<section id="books">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="eyebrow">📖 Recommended reading</div>
+      <h2>Five books that survive every syllabus revision.</h2>
+    </div>
+    <div class="books-grid reveal">
+      <div class="book-card">
+        <div class="icon">📘</div>
+        <h4>Object Oriented Modeling and Design with UML</h4>
+        <div class="auth">Michael Blaha, James Rumbaugh · Pearson</div>
+      </div>
+      <div class="book-card">
+        <div class="icon">📘</div>
+        <h4>Object Oriented Programming With C++</h4>
+        <div class="auth">E Balagurusamy · McGraw Hill</div>
+      </div>
+      <div class="book-card">
+        <div class="icon">📘</div>
+        <h4>Object Oriented Analysis, Design and Implementation</h4>
+        <div class="auth">Brahma Dathan, Sarnath Ramnath · University Press</div>
+      </div>
+      <div class="book-card">
+        <div class="icon">📘</div>
+        <h4>Object Oriented Systems and Development</h4>
+        <div class="auth">Ali Bahrami · Tata McGraw Hill</div>
+      </div>
+      <div class="book-card">
+        <div class="icon">📘</div>
+        <h4>Object-Oriented Analysis and Design with Applications</h4>
+        <div class="auth">Grady Booch et al. · Addison-Wesley</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- QUOTE -->
+<section>
+  <div class="big-quote reveal">
+    "Everything is an <span>object.</span><br>Everything else is just a really elaborate function call."
+  </div>
+</section>
+
+<footer>
+  <div class="credit-label">Designed and developed by</div>
+  <div class="name">Prof. Bhumika Shah</div>
+  <div class="role">Assistant Professor · Department of Information Technology</div>
+  <div class="made">Made with ☕, chaos theory, and way too many semicolons.</div>
+</footer>
+
+<script>
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); } });
+  },{threshold:0.12});
+  document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+</script>
+
+</body>
+</html>
