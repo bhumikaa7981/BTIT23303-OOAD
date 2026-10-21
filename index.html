@@ -204,6 +204,11 @@
   .unit-links{ display:flex; flex-direction:column; gap:8px; }
   .unit-go.secondary{ margin-top:0; }
   .unit-go.secondary::before{ content:'✦'; font-size:11px; }
+  .unit-note{
+    margin-top:16px; padding:12px 14px; border-radius:14px; background:#FFF6D6; border:2px dashed var(--ink);
+    font-size:13px; color:var(--ink-2); font-style:italic; line-height:1.55;
+  }
+  .unit-note b{ font-style:normal; font-family:var(--display); color:var(--ink); }
 
   /* ---------- BOOKS ---------- */
   .books-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:18px;}
@@ -354,46 +359,47 @@
         <div class="unit-topics">Abstraction · Links & Associations · Generalization & Inheritance · Aggregation & Composition</div>
         <div class="unit-links">
           <a href="unit01/" class="unit-go">Explore Unit 1 →</a>
-          <a href="https://drive.google.com/file/d/1FqBq_HFBEUPJWMZ58lKU-Q_S3KoeqOfe/view?usp=sharing" class="unit-go secondary" target="_blank" rel="noopener">Lecture Notes →</a>
-          <a href="https://bhumikaa7981.github.io/BTIT23303-OOAD/unit01/" class="unit-go secondary" target="_blank" rel="noopener">OOAD · Explore Live on Own →</a>
+          <a href="https://drive.google.com/file/d/1FqBq_HFBEUPJWMZ58lKU-Q_S3KoeqOfe/view?usp=drive_link" class="unit-go secondary" target="_blank" rel="noopener">Lecture Notes →</a>
         </div>
       </div>
 
-      <a href="unit2.html" class="unit-card locked" style="--u-accent:var(--sky-deep);">
-        <div class="unit-top"><div class="unit-icon">🔄</div><div class="unit-status soon">Coming soon</div></div>
+      <div class="unit-card" style="--u-accent:var(--sky-deep);">
+        <div class="unit-top"><div class="unit-icon">🔄</div><div class="unit-status live">Live now</div></div>
         <div class="unit-n">Unit 02 · 07 hrs</div>
         <h3>State & Interaction Modeling</h3>
         <div class="tag">Teaching diagrams to show what happens, and when.</div>
         <div class="unit-topics">State Diagrams · Use Case Models · Sequence & Activity Diagrams</div>
-        <div class="unit-go">Notify me →</div>
-      </a>
+        <div class="unit-links" style="margin-top:16px;">
+          <a href="https://drive.google.com/file/d/1MtaW1dKU6RygLbaKoFl5f78u9CHSMr3R/view?usp=drive_link" class="unit-go secondary" target="_blank" rel="noopener">Lecture Notes →</a>
+        </div>
+      </div>
 
-      <a href="unit3.html" class="unit-card locked" style="--u-accent:var(--mint-deep);">
-        <div class="unit-top"><div class="unit-icon">💻</div><div class="unit-status soon">Coming soon</div></div>
+      <div class="unit-card locked" style="--u-accent:var(--mint-deep);">
+        <div class="unit-top"><div class="unit-icon">💻</div><div class="unit-status soon">Not my unit</div></div>
         <div class="unit-n">Unit 03 · 12 hrs</div>
         <h3>C++ Fundamentals: Classes & Objects</h3>
         <div class="tag">Where the theory finally becomes actual, runnable code.</div>
         <div class="unit-topics">Member Functions · Static Members · Friend Functions · Pointers to Members</div>
-        <div class="unit-go">Notify me →</div>
-      </a>
+        <div class="unit-note"><b>Not my timetable, so not my notes.</b> C++ classes and objects are in a colleague's capable hands. I'd only be guessing here, and the compiler doesn't accept guesses.</div>
+      </div>
 
-      <a href="unit4.html" class="unit-card locked" style="--u-accent:var(--yellow-deep);">
-        <div class="unit-top"><div class="unit-icon">🛠️</div><div class="unit-status soon">Coming soon</div></div>
+      <div class="unit-card locked" style="--u-accent:var(--yellow-deep);">
+        <div class="unit-top"><div class="unit-icon">🛠️</div><div class="unit-status soon">Not my unit</div></div>
         <div class="unit-n">Unit 04 · 08 hrs</div>
         <h3>Constructors & Operator Overloading</h3>
         <div class="tag">Giving objects a proper birth, death, and personality.</div>
         <div class="unit-topics">Copy & Dynamic Constructors · Destructors · Operator Overloading · Type Conversion</div>
-        <div class="unit-go">Notify me →</div>
-      </a>
+        <div class="unit-note"><b>Outside my teaching context.</b> Constructors and operator overloading belong to another faculty's schedule. Some things shouldn't be overloaded, like my opinions on subjects I don't teach.</div>
+      </div>
 
-      <a href="unit5.html" class="unit-card locked" style="--u-accent:var(--grape-deep);">
-        <div class="unit-top"><div class="unit-icon">🦋</div><div class="unit-status soon">Coming soon</div></div>
+      <div class="unit-card locked" style="--u-accent:var(--grape-deep);">
+        <div class="unit-top"><div class="unit-icon">🦋</div><div class="unit-status soon">Not my unit</div></div>
         <div class="unit-n">Unit 05 · 10 hrs</div>
         <h3>Inheritance, Virtual Functions & Polymorphism</h3>
         <div class="tag">The glow-up finale: reuse, flexibility, runtime magic.</div>
         <div class="unit-topics">Multiple & Multilevel Inheritance · Virtual Base Class · Virtual Functions</div>
-        <div class="unit-go">Notify me →</div>
-      </a>
+        <div class="unit-note"><b>Not in my context either.</b> Virtual functions get resolved at runtime; who teaches this unit was resolved by the timetable, and it isn't me. Please ask the faculty who is: they'll do it justice.</div>
+      </div>
 
     </div>
   </div>
